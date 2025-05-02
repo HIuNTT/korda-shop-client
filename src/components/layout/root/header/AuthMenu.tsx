@@ -8,17 +8,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useDisclosure } from "@/hooks/use-disclosure"
 import LoginDialog from "@/modules/auth/components/LoginDialogl"
+import SignUpDialog from "@/modules/auth/components/sign-up"
 import { CircleUser } from "lucide-react"
 import { useCallback, useRef, useState } from "react"
 
 export default function AuthMenu() {
-  console.log("AuthMenu")
-
   const [open, setOpen] = useState(false)
 
   const disclosureLogin = useDisclosure()
-
-  console.log("open:", open)
+  const disclosureSignUp = useDisclosure()
 
   const openTimerRef = useRef(0)
   const closeTimerRef = useRef(0)
@@ -54,17 +52,21 @@ export default function AuthMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-40"
+          className="w-32"
           onPointerEnter={handleOpen}
           onPointerLeave={handleClose}
         >
           <DropdownMenuItem onClick={() => disclosureLogin.onOpen()}>Đăng nhập</DropdownMenuItem>
-          <DropdownMenuItem>Đăng ký</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => disclosureSignUp.onOpen()}>Đăng ký</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Dialog open={disclosureLogin.isOpen} onOpenChange={disclosureLogin.onOpenChange}>
-        <LoginDialog onClose={disclosureLogin.onClose} />
+        <LoginDialog onClose={disclosureLogin.onClose} onOpenSignUp={disclosureSignUp.onOpen} />
+      </Dialog>
+
+      <Dialog open={disclosureSignUp.isOpen} onOpenChange={disclosureSignUp.onOpenChange}>
+        <SignUpDialog onClose={disclosureSignUp.onClose} onOpenLogin={disclosureLogin.onOpen} />
       </Dialog>
     </>
   )

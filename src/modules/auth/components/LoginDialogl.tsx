@@ -19,9 +19,10 @@ const formSchema = z.object({
 
 interface LoginDialogProps {
   onClose: () => void
+  onOpenSignUp?: () => void
 }
 
-export default function LoginDialog({ onClose }: LoginDialogProps) {
+export default function LoginDialog({ onClose, onOpenSignUp }: LoginDialogProps) {
   const user = useUser()
   const googleLogin = useGoogleAuth()
   const login = useLogin()
@@ -46,6 +47,7 @@ export default function LoginDialog({ onClose }: LoginDialogProps) {
         user.setUser(data.user)
 
         onClose()
+        form.reset()
       },
     })
   }
@@ -63,6 +65,7 @@ export default function LoginDialog({ onClose }: LoginDialogProps) {
       user.setUser(data.user)
 
       onClose()
+      form.reset()
     },
     onError() {
       toast.error("Không thể đăng nhập bằng Google")
@@ -70,7 +73,10 @@ export default function LoginDialog({ onClose }: LoginDialogProps) {
   })
 
   return (
-    <DialogContent className="w-full gap-6 p-8 sm:max-w-md">
+    <DialogContent
+      onCloseAutoFocus={() => form.reset()}
+      className="w-full gap-6 p-8 pt-10 sm:max-w-md"
+    >
       <DialogHeader>
         <DialogTitle className="text-xl">Đăng nhập</DialogTitle>
         <DialogDescription>Sử dụng tài khoản Korda của bạn</DialogDescription>
@@ -115,7 +121,12 @@ export default function LoginDialog({ onClose }: LoginDialogProps) {
             </div>
             <div className="text-center text-sm">
               Bạn mới biết đến Korda?{" "}
-              <span className="cursor-pointer underline underline-offset-4">Đăng ký</span>
+              <span
+                onClick={() => (onClose(), onOpenSignUp?.())}
+                className="cursor-pointer underline underline-offset-4"
+              >
+                Đăng ký
+              </span>
             </div>
           </div>
         </form>
