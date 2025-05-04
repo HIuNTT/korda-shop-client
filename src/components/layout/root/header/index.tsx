@@ -18,7 +18,7 @@ export default function Header() {
             <Link to={paths.home.path}>
               <div className="font-chewy text-primary text-4xl select-none">KorDa</div>
             </Link>
-            <Button variant="ghost" size="lg" startContent={<LayoutGrid />}>
+            <Button variant="ghost" startContent={<LayoutGrid />}>
               Danh mục
             </Button>
           </div>

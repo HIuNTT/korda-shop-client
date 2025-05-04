@@ -91,12 +91,7 @@ export default function LoginDialog({ onClose, onOpenSignUp }: LoginDialogProps)
                 Quên mật khẩu?
               </p>
             </div>
-            <Button
-              size="lg"
-              type="submit"
-              isLoading={login.isPending}
-              disabled={!form.formState.isValid}
-            >
+            <Button type="submit" isLoading={login.isPending} disabled={!form.formState.isValid}>
               Đăng nhập
             </Button>
             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:border-t">
@@ -123,7 +118,7 @@ export default function LoginDialog({ onClose, onOpenSignUp }: LoginDialogProps)
               Bạn mới biết đến Korda?{" "}
               <span
                 onClick={() => (onClose(), onOpenSignUp?.())}
-                className="cursor-pointer underline underline-offset-4"
+                className="text-primary cursor-pointer underline-offset-4 hover:underline"
               >
                 Đăng ký
               </span>

@@ -69,8 +69,8 @@ export default function InforForm({ onClose }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-6">
             <Field name="fullName" placeholder="Họ và tên của bạn" t="input" size="lg" />
-            <Field name="password" placeholder="Mật khẩu" t="input" size="lg" />
-            <Button className="mt-3" type="submit" size="lg">
+            <Field name="password" placeholder="Mật khẩu" t="password-input" size="lg" />
+            <Button className="mt-3" type="submit">
               Tạo tài khoản
             </Button>
           </div>

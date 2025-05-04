@@ -81,7 +81,7 @@ export default function SignUpDialog({ onClose, onOpenLogin }: SignUpDialogProps
             Bạn đã có tài khoản?{" "}
             <span
               onClick={() => (onClose(), onOpenLogin?.())}
-              className="cursor-pointer underline underline-offset-4"
+              className="text-primary cursor-pointer underline-offset-4 hover:underline"
             >
               Đăng nhập
             </span>

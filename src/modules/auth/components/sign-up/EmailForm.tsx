@@ -49,7 +49,7 @@ export default function EmailForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-6">
             <Field t="input" name="email" placeholder="abc@gmail.com" label="Email" size="lg" />
-            <Button size="lg" type="submit" isLoading={isPending}>
+            <Button type="submit" isLoading={isPending || existUser.isPending}>
               Tiếp tục
             </Button>
           </div>

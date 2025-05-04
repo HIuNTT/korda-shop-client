@@ -42,7 +42,7 @@ export const useUser = create<UserState>()(
     }),
     {
       name: "user",
-      partialize: (state) => state.auth,
+      partialize: (state) => ({ auth: state.auth }),
     },
   ),
 )

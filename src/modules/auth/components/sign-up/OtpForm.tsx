@@ -76,7 +76,7 @@ export default function OtpForm() {
               pattern={REGEXP_ONLY_DIGITS}
               autoFocus
             />
-            <Button className="mt-3" type="submit" size="lg" isLoading={verifyCode.isPending}>
+            <Button className="mt-3" type="submit" isLoading={verifyCode.isPending}>
               Xác nhận
             </Button>
             {isRunning && (
