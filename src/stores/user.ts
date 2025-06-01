@@ -1,3 +1,4 @@
+import { Roles } from "@/constants/role"
 import { AuthUser, User } from "@/types/user"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
@@ -12,20 +13,20 @@ interface UserState {
 
 const initialUserState: Omit<UserState, "setToken" | "setUser" | "clear"> = {
   auth: {
-    accessToken: "",
-    refreshToken: "",
+    access_token: "",
+    refresh_token: "",
   },
   user: {
     id: NaN,
     email: "",
-    isActived: true,
+    is_actived: true,
     phone: "",
     provider: "",
-    role: "",
+    role: Roles.USER,
     profile: {
       id: NaN,
-      fullName: "",
-      avatarUrl: "",
+      full_name: "",
+      avatar_url: "",
       birthday: "",
       gender: NaN,
     },

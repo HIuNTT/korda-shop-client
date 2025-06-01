@@ -6,7 +6,7 @@ import { router } from "./configs/router"
 import { Toaster } from "./components/ui/sonner"
 import LoadingPage from "./components/common/LoadingPage"
 import { GoogleOAuthProvider } from "@react-oauth/google"
-import ThemeProvider from "./components/layout/ThemeProvider"
+import ThemeProvider from "./context/ThemeProvider"
 
 function App() {
   return (

@@ -6,7 +6,7 @@ import { useSignUpStore } from "@/stores/sign-up"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-import { SignUpDto, useSignUp } from "../../services/signUp"
+import { useSignUp } from "../../services/signUp"
 import { useUser } from "@/stores/user"
 
 const formSchema = z.object({
@@ -37,17 +37,18 @@ export default function InforForm({ onClose }: Props) {
   const user = useUser()
   const signUp = useSignUp()
 
-  const onSubmit: SubmitHandler<Omit<SignUpDto, "email">> = (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {
     signUp.mutate(
       {
         email: dataForm.email,
-        ...data,
+        full_name: data.fullName,
+        password: data.password,
       },
       {
         onSuccess: (data) => {
           user.setToken({
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
           })
 
           user.setUser(data.user)

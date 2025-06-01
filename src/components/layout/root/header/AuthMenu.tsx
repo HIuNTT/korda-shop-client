@@ -19,6 +19,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import { useGetProfile } from "@/modules/user/services/getProfile"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useLogout } from "@/modules/auth/services/logout"
+import { queryClient } from "@/configs/queryClient"
 
 export default function AuthMenu() {
   const [open, setOpen] = useState(false)
@@ -31,7 +33,8 @@ export default function AuthMenu() {
     clear,
   } = useUser()
 
-  const getProfile = useGetProfile(!!auth.accessToken && !user.email)
+  const getProfile = useGetProfile(!!auth.access_token && !user.email)
+  const logout = useLogout()
 
   const disclosureLogin = useDisclosure()
   const disclosureSignUp = useDisclosure()
@@ -53,19 +56,32 @@ export default function AuthMenu() {
     }, 100)
   }, [setOpen])
 
+  const handleLogout = () => {
+    logout.mutate(
+      { refresh_token: auth.refresh_token },
+      {
+        onSuccess: () => {
+          queryClient.clear()
+          clear()
+        },
+        onError: () => clear(),
+      },
+    )
+  }
+
   useEffect(() => {
-    if (getProfile.isSuccess) {
+    if (getProfile.data) {
       setUser(getProfile.data)
     }
 
     if (getProfile.isError) {
       clear()
     }
-  }, [getProfile.isSuccess, getProfile.isError, setUser, clear])
+  }, [getProfile.data, getProfile.isError, setUser, clear])
 
   return (
     <>
-      {!auth.accessToken ? (
+      {!auth.access_token ? (
         <Button
           variant="ghost"
           size="icon"
@@ -90,7 +106,7 @@ export default function AuthMenu() {
               className="px-4"
               startContent={
                 <Avatar className="size-7">
-                  <AvatarImage src={profile.avatarUrl} alt={profile.fullName} />
+                  <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
                   <AvatarFallback>
                     <LuUserRound size={16} />
                   </AvatarFallback>
@@ -100,7 +116,7 @@ export default function AuthMenu() {
                 <ChevronDown className={cn("ease-out-quint transition", { "rotate-180": open })} />
               }
             >
-              {profile.fullName.split(" ").pop()}
+              {profile.full_name.split(" ").pop()}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -131,7 +147,7 @@ export default function AuthMenu() {
               </Button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" asChild>
+            <DropdownMenuItem variant="destructive" asChild onClick={handleLogout}>
               <Button
                 className="w-full justify-start !px-3 focus-visible:ring-0"
                 variant="ghost"

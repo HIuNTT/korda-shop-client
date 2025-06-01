@@ -28,8 +28,8 @@ export default function SignUpDialog({ onClose, onOpenLogin }: SignUpDialogProps
       const data = await googleLogin.mutateAsync({ code })
 
       user.setToken({
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
       })
 
       user.setUser(data.user)

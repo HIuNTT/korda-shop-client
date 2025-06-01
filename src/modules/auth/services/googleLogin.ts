@@ -8,11 +8,12 @@ export interface GoogleLoginDto {
 
 export interface GoogleLoginResponse {
   user: User
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  refresh_token: string
 }
 async function googleLogin(data: GoogleLoginDto) {
-  return (await api.post<GoogleLoginResponse>("/auth/user/google", data)).data
+  return (await api.post<API.BaseResponse<GoogleLoginResponse>>("/auth/user/google", data)).data
+    .data
 }
 
 export function useGoogleLogin() {

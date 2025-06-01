@@ -1,14 +1,29 @@
 export const paths = {
   home: {
     path: "/",
+    getHref: () => "/",
   },
 
-  auth: {
-    login: {
-      path: "/auth/login",
+  admin: {
+    home: {
+      path: "/admin",
+      getHref: () => "/admin",
     },
-    sign_up: {
-      path: "/auth/sign-up",
+    order: {
+      list: {
+        path: "/orders",
+        getHref: () => "/admin/orders",
+      },
+    },
+    product: {
+      list: {
+        path: "/products",
+        getHref: () => "/admin/products",
+      },
+      create: {
+        path: "/create",
+        getHref: () => "/admin/products/create",
+      },
     },
   },
 } as const

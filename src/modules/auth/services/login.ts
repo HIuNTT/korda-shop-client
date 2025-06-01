@@ -9,12 +9,12 @@ export interface LoginDto {
 
 export interface LoginResponse {
   user: User
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  refresh_token: string
 }
 
 async function login(data: LoginDto) {
-  return (await api.post<LoginResponse>("/auth/login", data)).data
+  return (await api.post<API.BaseResponse<LoginResponse>>("/auth/login", data)).data.data
 }
 
 export function useLogin() {

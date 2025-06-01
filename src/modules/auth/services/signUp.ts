@@ -5,18 +5,18 @@ import { SendVerifyCodeDto } from "./verifyCode"
 
 export interface SignUpDto {
   email: string
-  fullName: string
+  full_name: string
   password: string
 }
 
 interface SignUpResponse {
   user: User
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  refresh_token: string
 }
 
 async function signUp(data: SignUpDto) {
-  return (await api.post<SignUpResponse>("/auth/sign-up", data)).data
+  return (await api.post<API.BaseResponse<SignUpResponse>>("/auth/sign-up", data)).data.data
 }
 
 export function useSignUp() {
@@ -32,7 +32,7 @@ interface ExistUserResponse {
 }
 
 async function existUser(data: ExistUserDto) {
-  return (await api.post<ExistUserResponse>("/user/exist", data)).data
+  return (await api.post<API.BaseResponse<ExistUserResponse>>("/user/exist", data)).data.data
 }
 
 export function useExistUser() {

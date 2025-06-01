@@ -40,8 +40,8 @@ export default function LoginDialog({ onClose, onOpenSignUp }: LoginDialogProps)
     login.mutate(data, {
       onSuccess: (data) => {
         user.setToken({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
         })
 
         user.setUser(data.user)
@@ -58,8 +58,8 @@ export default function LoginDialog({ onClose, onOpenSignUp }: LoginDialogProps)
       const data = await googleLogin.mutateAsync({ code })
 
       user.setToken({
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
       })
 
       user.setUser(data.user)
