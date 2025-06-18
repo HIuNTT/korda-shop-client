@@ -5,7 +5,7 @@ import RootLayout from "@/components/layout/root"
 import { paths } from "@/constants/paths"
 import { Roles } from "@/constants/role"
 import { homeRoute } from "@/modules/home/route"
-import { adminProductRoute } from "@/modules/product/route"
+import { adminProductRoute } from "@/modules/product-admin/route"
 import { createBrowserRouter } from "react-router"
 
 export const router = createBrowserRouter([

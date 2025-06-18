@@ -21,7 +21,7 @@ export default function AdminLayout() {
         )}
       >
         <Header />
-        <main className="px-4 py-4">
+        <main className="px-4 py-4 pb-10">
           <Outlet />
         </main>
       </div>

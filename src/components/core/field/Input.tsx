@@ -4,7 +4,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 
 export interface InputProps extends ShadcnInputProps {
-  t: "input" | "password-input"
+  t: "input" | "password-input" | "input-number"
   hideError?: boolean
 }
 
@@ -15,6 +15,20 @@ export default function Input({ t, hideError, ...props }: InputProps) {
     return (
       <FormControl hideError={hideError}>
         <ShadcnInput {...props} />
+      </FormControl>
+    )
+  }
+
+  if (t === "input-number") {
+    const onInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      const numericValue = value.replace(/[^0-9]+/g, "")
+      e.target.value = numericValue
+      props.onChange?.(e)
+    }
+    return (
+      <FormControl hideError={hideError}>
+        <ShadcnInput {...props} inputMode="numeric" onChange={onInternalChange} />
       </FormControl>
     )
   }

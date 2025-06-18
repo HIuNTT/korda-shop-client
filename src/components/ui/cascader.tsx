@@ -2,12 +2,14 @@ import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { ChevronDownIcon, ChevronRightIcon } from "lucide-react"
+import { Check, ChevronDownIcon, ChevronRightIcon, X } from "lucide-react"
 import { TbXboxXFilled } from "react-icons/tb"
 
 const VALUE_SPLIT = "__SHADCN_CASCADER_SPLIT__"
 
 export interface BaseOptionType {
+  disabled?: boolean
+  disableCheckbox?: boolean
   label?: React.ReactNode
   value?: string | number | null
   children?: DefaultOptionType[]
@@ -52,6 +54,7 @@ interface CascaderContextValue {
   filedNames: InternalFieldNames
   values: SingleValueType[]
   // halfValues: SingleValueType[]
+  changeOnSelect?: boolean
   onSelect: (valuePath: SingleValueType) => void
   expandTrigger?: "click" | "hover"
   optionRender?: CascaderProps["optionRender"]
@@ -72,7 +75,7 @@ interface CascaderContextValue {
 
 const CascaderContext = React.createContext<CascaderContextValue>({} as CascaderContextValue)
 
-interface CascaderProps<
+export interface CascaderProps<
   OptionType extends DefaultOptionType = DefaultOptionType,
   ValueFiled extends keyof OptionType = keyof OptionType,
 > {
@@ -114,6 +117,7 @@ export function Cascader({
   onChange,
   displayRender,
   allowClear = true,
+  changeOnSelect,
 }: CascaderProps) {
   const [open, setOpen] = React.useState<boolean>(defaultOpen ?? false)
 
@@ -130,7 +134,11 @@ export function Cascader({
 
   const getMissingValues = useMissingValues(mergedOptions, mergedFieldNames)
 
-  const [checkedValues] = React.useMemo(() => getMissingValues(rawValues), [rawValues])
+  const [checkedValues, missingCheckedValues] = React.useMemo(() => {
+    const [existValues, missingValues] = getMissingValues(rawValues)
+
+    return [existValues, missingValues]
+  }, [rawValues, getMissingValues])
 
   const displayValues = useDisplayValues(
     checkedValues,
@@ -159,7 +167,12 @@ export function Cascader({
     }
   })
 
-  const handleSelection = useSelect(multiple ?? false, triggerChange, checkedValues)
+  const handleSelection = useSelect(
+    multiple ?? false,
+    triggerChange,
+    checkedValues,
+    missingCheckedValues,
+  )
 
   const onInternalSelect = useEvent((valuePath: SingleValueType) => {
     handleSelection(valuePath)
@@ -178,6 +191,10 @@ export function Cascader({
         triggerChange([]) // Clear all selections
         return
       }
+
+      // If the info is not clear, remove valueCells
+      const { valueCells } = info.values[0] as DisplayValueType & { valueCells: SingleValueType }
+      onInternalSelect(valueCells)
     },
   )
 
@@ -186,6 +203,7 @@ export function Cascader({
       options: mergedOptions,
       filedNames: mergedFieldNames,
       values: checkedValues,
+      changeOnSelect,
       expandTrigger,
       open,
       multiple,
@@ -199,6 +217,7 @@ export function Cascader({
       mergedOptions,
       mergedFieldNames,
       checkedValues,
+      changeOnSelect,
       expandTrigger,
       open,
       multiple,
@@ -219,7 +238,7 @@ export function Cascader({
   )
 }
 
-interface CascaderValueProps extends Omit<React.ComponentProps<"span">, "placeholder"> {
+export interface CascaderValueProps extends Omit<React.ComponentProps<"span">, "placeholder"> {
   placeholder?: React.ReactNode
 }
 export function CascaderValue({
@@ -229,7 +248,16 @@ export function CascaderValue({
   placeholder = "",
   ...valueProps
 }: CascaderValueProps) {
-  const { displayValues } = React.useContext(CascaderContext)
+  const { displayValues, onDisplayValuesChange, multiple } = React.useContext(CascaderContext)
+
+  const onSelectorRemove = (val: DisplayValueType) => {
+    const newValues = displayValues.filter((item) => item !== val)
+
+    onDisplayValuesChange(newValues, {
+      type: "remove",
+      values: [val],
+    })
+  }
 
   const item = displayValues?.[0]
 
@@ -252,7 +280,7 @@ export function CascaderValue({
 
   return (
     <>
-      {item ? (
+      {item && !multiple ? (
         <span
           title={selectionTitle}
           data-slot="cascader-value"
@@ -262,9 +290,45 @@ export function CascaderValue({
           {item.label}
         </span>
       ) : null}
+      {multiple && displayValues.length > 0 ? (
+        <div
+          className={cn("flex flex-wrap gap-1", "data-[slot=cascader-value]:text-sm")}
+          data-slot="cascader-value"
+        >
+          {displayValues.map((val) => {
+            const onClose = (event?: React.MouseEvent) => {
+              if (event) {
+                event.stopPropagation()
+              }
+
+              onSelectorRemove(val)
+            }
+
+            return (
+              <span
+                key={val.key}
+                className="bg-secondary text-accent-foreground flex items-center gap-0.5 rounded px-1.5 py-1 text-xs"
+                title={val.label?.toString() || val.title?.toString()}
+              >
+                {val.label}
+                <span
+                  className="text-primary-foreground cursor-pointer opacity-50 hover:opacity-100"
+                  onClick={onClose}
+                >
+                  <X className="size-3.5" />
+                </span>
+              </span>
+            )
+          })}
+        </div>
+      ) : null}
       {placeholderNode}
     </>
   )
+}
+
+export interface CascaderTriggerProps extends React.ComponentProps<typeof SelectPrimitive.Trigger> {
+  size?: "sm" | "default" | "lg"
 }
 
 export function CascaderTrigger({
@@ -272,10 +336,8 @@ export function CascaderTrigger({
   children,
   size = "default",
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
-}) {
-  const { onDisplayValuesChange, displayValues, allowClear, toggleOpen } =
+}: CascaderTriggerProps) {
+  const { onDisplayValuesChange, displayValues, allowClear, toggleOpen, multiple } =
     React.useContext(CascaderContext)
 
   const onClearMouseDown: React.MouseEventHandler<HTMLSpanElement> = () => {
@@ -300,8 +362,11 @@ export function CascaderTrigger({
         data-size={size}
         className={cn(
           "group relative",
-          "border-input data-[state=open]:ring-ring/50 data-[state=open]:border-ring [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 min-w-cascader flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=cascader-value]:line-clamp-1 *:data-[slot=cascader-value]:flex *:data-[slot=cascader-value]:items-center *:data-[slot=cascader-value]:gap-2 data-[state=open]:ring-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "border-input data-[state=open]:ring-ring/50 data-[state=open]:border-ring [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 min-w-cascader flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=cascader-value]:line-clamp-1 *:data-[slot=cascader-value]:flex *:data-[slot=cascader-value]:items-center *:data-[slot=cascader-value]:gap-2 data-[state=open]:ring-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2",
+          multiple &&
+            "py-1 data-[size=default]:min-h-9 data-[size=lg]:min-h-10 data-[size=sm]:min-h-8",
+          !multiple && "data-[size=default]:h-9 data-[size=lg]:h-10 data-[size=sm]:h-8",
           className,
         )}
         {...props}
@@ -323,8 +388,10 @@ export function CascaderContent({
   children,
   ...props
 }: React.ComponentProps<typeof PopoverContent>) {
-  const { options, filedNames, multiple, open, onSelect, toggleOpen } =
+  const { options, filedNames, multiple, open, values, onSelect, toggleOpen, changeOnSelect } =
     React.useContext(CascaderContext)
+
+  const checkedSet = React.useMemo(() => new Set(toPathKeys(values)), [values])
 
   const [activeValueCells, setActiveValueCells] = useActive(multiple, open)
 
@@ -343,12 +410,17 @@ export function CascaderContent({
     setActiveValueCells(nextValueCells)
   }
 
+  const isSelectable = (option: DefaultOptionType) => {
+    const { disabled: optionDisabled } = option
+    const isMergedLeaf = isLeaf(option, filedNames)
+
+    return !optionDisabled && (isMergedLeaf || changeOnSelect || multiple)
+  }
+
   const onPathSelect = (valuePath: SingleValueType, leaf: boolean) => {
     onSelect(valuePath)
 
     if (!multiple && leaf) {
-      console.log("onPathSelect", valuePath)
-
       toggleOpen(false)
     }
   }
@@ -397,7 +469,10 @@ export function CascaderContent({
                 activeValue={activeValue}
                 prevValuePath={prevValuePath}
                 onActive={onPathOpen}
+                checkedSet={checkedSet}
                 onSelect={onPathSelect}
+                isSelectable={isSelectable}
+                multiple={multiple}
               />
             )
           })}
@@ -414,14 +489,19 @@ interface CascaderColumnProps<OptionType extends DefaultOptionType = DefaultOpti
   prevValuePath: React.Key[]
   onSelect: (valuePath: SingleValueType, leaf: boolean) => void
   onActive: (valuePath: SingleValueType) => void
+  checkedSet: Set<React.Key>
+  isSelectable: (option: DefaultOptionType) => boolean
 }
 
 function CascaderColumn<OptionType extends DefaultOptionType = DefaultOptionType>({
+  multiple,
   options,
   activeValue,
   prevValuePath,
   onSelect,
   onActive,
+  checkedSet,
+  isSelectable,
 }: CascaderColumnProps<OptionType>) {
   const { filedNames, expandTrigger, optionRender } = React.useContext(CascaderContext)
 
@@ -438,22 +518,25 @@ function CascaderColumn<OptionType extends DefaultOptionType = DefaultOptionType
         const fullPath = [...prevValuePath, value]
         const fullPathKey = toPathKey(fullPath)
 
+        const checked = checkedSet.has(fullPathKey)
+
         return {
           label,
           value,
           isLeaf: isMergedLeaf,
+          checked,
           option,
           fullPath,
           fullPathKey,
         }
       }),
-    [options, filedNames],
+    [options, checkedSet, filedNames, prevValuePath],
   )
 
   return (
     <div className="min-w-cascader-item p-1" role="menu">
       {optionInfoList.map(
-        ({ label, value, isLeaf: isMergedLeaf, option, fullPath, fullPathKey }) => {
+        ({ label, value, isLeaf: isMergedLeaf, checked, option, fullPath, fullPathKey }) => {
           const triggerOpenPath = () => {
             const nextValueCells = [...fullPath]
             if (hoverOpen && isMergedLeaf) {
@@ -463,7 +546,9 @@ function CascaderColumn<OptionType extends DefaultOptionType = DefaultOptionType
           }
 
           const triggerSelect = () => {
-            onSelect(fullPath, isMergedLeaf)
+            if (isSelectable(option)) {
+              onSelect(fullPath, isMergedLeaf)
+            }
           }
 
           let title: string | undefined
@@ -478,17 +563,18 @@ function CascaderColumn<OptionType extends DefaultOptionType = DefaultOptionType
               key={fullPathKey}
               data-path-key={fullPathKey}
               className={cn(
-                "hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center justify-between gap-1 rounded-sm px-3 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+                "hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center justify-between gap-2 rounded-sm px-3 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
                 "transition-all duration-200",
                 "[&_svg:not([class*='text-'])]:text-muted-foreground",
-                activeValue === value && "text-accent-foreground bg-accent",
+                (activeValue === value || activeValue === fullPathKey) &&
+                  "text-accent-foreground bg-accent",
               )}
               data-slot="cascader-option"
               title={title}
               onClick={() => {
                 triggerOpenPath()
 
-                if (isMergedLeaf) {
+                if (!multiple || isMergedLeaf) {
                   triggerSelect()
                 }
               }}
@@ -500,6 +586,9 @@ function CascaderColumn<OptionType extends DefaultOptionType = DefaultOptionType
             >
               <span>{optionRender ? optionRender(option) : label}</span>
               {!isMergedLeaf && <ChevronRightIcon className="translate-x-1" />}
+              {multiple && isMergedLeaf && (
+                <Check className={cn("translate-x-1 opacity-0", checked && "opacity-100")} />
+              )}
             </div>
           )
         },
@@ -557,7 +646,8 @@ function fillFieldNames(fieldNames?: FieldNames): InternalFieldNames {
 }
 
 function useEvent<T extends Function>(callback: T): T {
-  const fnRef = React.useRef<any>(callback)
+  const fnRef = React.useRef<any>(null)
+  fnRef.current = callback
 
   const memoFn = React.useCallback<T>(((...args: any) => fnRef.current?.(...args)) as any, [])
 
@@ -604,7 +694,7 @@ function toPathOptions(
       option: foundOption as DefaultOptionType,
     })
 
-    currentList = foundOption?.[fieldNames.children]
+    currentList = foundOption?.[fieldNames.children] || []
   }
 
   return valueOptions
@@ -635,24 +725,45 @@ function useSelect(
   multiple: boolean,
   triggerChange: (nextValues: InternalValueType) => void,
   checkedValues: SingleValueType[],
+  missingCheckedValues: SingleValueType[],
 ) {
-  const values = checkedValues
-  console.log("useSelect", values)
-
   return (valuePath: SingleValueType) => {
     if (!multiple) {
       triggerChange(valuePath)
     } else {
-      const nextValues = [...values, valuePath]
-      console.log("onInternalSelect", values)
+      const pathKey = toPathKey(valuePath)
+      const checkedPathKeys = toPathKeys(checkedValues)
 
-      triggerChange(nextValues)
+      const existInChecked = checkedPathKeys.includes(pathKey)
+      const existInMissing = missingCheckedValues.some(
+        (valueCells) => toPathKey(valueCells) === pathKey,
+      )
+
+      let nextCheckedValues = checkedValues
+      let nextMissingValues = missingCheckedValues
+
+      if (existInMissing && !existInChecked) {
+        nextMissingValues = nextMissingValues.filter(
+          (valueCells) => toPathKey(valueCells) !== pathKey,
+        )
+      } else {
+        const nextRawCheckedValues = existInChecked
+          ? checkedValues.filter((value) => JSON.stringify(value) !== JSON.stringify(valuePath))
+          : [...checkedValues, valuePath]
+
+        nextCheckedValues = nextRawCheckedValues
+      }
+      triggerChange([...nextMissingValues, ...nextCheckedValues])
     }
   }
 }
 
 function toPathKey(value: SingleValueType) {
   return value.join(VALUE_SPLIT)
+}
+
+function toPathKeys(value: SingleValueType[]) {
+  return value.map(toPathKey)
 }
 
 function useDisplayValues(
@@ -666,7 +777,7 @@ function useDisplayValues(
     const mergedDisplayRender =
       displayRender ||
       ((labels) => {
-        const mergedLabels: React.ReactNode[] = multiple ? labels.slice(-1) : labels
+        const mergedLabels: React.ReactNode[] = labels
         const SPLIT = " / "
 
         if (mergedLabels.every((label) => ["string", "number"].includes(typeof label))) {

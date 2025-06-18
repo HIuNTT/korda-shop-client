@@ -1,4 +1,4 @@
-import { keepPreviousData, QueryClient } from "@tanstack/react-query"
+import { keepPreviousData, MutationCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "sonner"
 
@@ -24,7 +24,14 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       retry: 0,
-      onError: handleError,
+      // onError: handleError,
     },
   },
+  mutationCache: new MutationCache({
+    onError(error, _, __, mutation) {
+      if (!mutation.meta?.skipErrorHandle) {
+        handleError(error)
+      }
+    },
+  }),
 })

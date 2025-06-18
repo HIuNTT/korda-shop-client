@@ -34,6 +34,7 @@ function Input({
   value,
   onChange,
   id,
+  inputMode,
   ...props
 }: InputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -41,11 +42,12 @@ function Input({
   return (
     <div
       className={cn(
-        "dark:bg-input/30 border-input inline-flex w-full min-w-0 cursor-text items-center rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] duration-150 ease-out outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        "group dark:bg-input/30 border-input inline-flex w-full min-w-0 cursor-text items-center rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] duration-150 ease-out outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-2",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         inputVariants({ size, className }),
       )}
+      data-size={size}
       {...props}
       onClick={() => inputRef.current?.focus()}
     >
@@ -67,6 +69,7 @@ function Input({
             "peer",
           )}
           placeholder={placeholder}
+          inputMode={inputMode}
         />
         {endContent}
       </div>

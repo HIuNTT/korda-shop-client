@@ -45,6 +45,8 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-selection: var(--selection);
+  --color-selection-foreground: var(--selection-foreground);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 
   --cascader-control-item-width: 111px;
@@ -84,6 +86,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --selection: oklch(0.145 0 0);
+  --selection-foreground: oklch(1 0 0);
 }
 
 .dark {
@@ -118,6 +122,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --selection: oklch(0.922 0 0);
+  --selection-foreground: oklch(0.205 0 0);
 }
 
 @layer base {
@@ -134,6 +140,10 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  ::selection {
+    background-color: var(--color-selection);
+    color: var(--color-selection-foreground);
   }
 }
 
@@ -180,4 +190,8 @@
 
 @utility min-w-cascader {
   @apply min-w-[var(--cascader-control-width)];
+}
+
+.tox-edit-area::before {
+  border: 2px solid var(--color-primary) !important;
 }
