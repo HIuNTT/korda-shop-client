@@ -6,13 +6,14 @@ import { paths } from "@/constants/paths"
 import { Roles } from "@/constants/role"
 import { homeRoute } from "@/modules/home/route"
 import { adminProductRoute } from "@/modules/product-admin/route"
+import { productRoute } from "@/modules/product/route"
 import { createBrowserRouter } from "react-router"
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    children: [homeRoute],
+    children: [homeRoute, productRoute],
   },
   {
     path: paths.admin.home.getHref(),

@@ -36,3 +36,17 @@ export interface AttributeValueOption {
   updated_at: string
   deleted_at?: string
 }
+
+export interface DefaultAttribute {
+  name: string
+  value: string
+}
+
+export interface AttributeValue extends Pick<Attribute, "id" | "name"> {
+  value: string
+}
+
+export interface AttributeItem {
+  group_name: string
+  attributes: AttributeValue[]
+}

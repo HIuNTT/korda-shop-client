@@ -184,7 +184,7 @@ export default function CreatProduct() {
   const onSubmit: SubmitHandler<z.output<typeof formSchema>> = (data) => {
     const formattedData: CreateProductDto = {
       ...data,
-      category_ids: data.category_ids.map((item) => item.at(-1)!),
+      category_ids: [...new Set(data.category_ids.flat())],
       attributes: data.attributes?.filter(
         (att) =>
           att.attribute_values.length > 0 &&

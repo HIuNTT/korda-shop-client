@@ -5,7 +5,9 @@ export default function RootLayout() {
   return (
     <div>
       <Header />
-      <Outlet />
+      <div className="mx-auto max-w-[1200px] max-[1200px]:px-4">
+        <Outlet />
+      </div>
     </div>
   )
 }

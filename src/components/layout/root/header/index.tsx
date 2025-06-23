@@ -8,8 +8,6 @@ import AuthMenu from "./AuthMenu"
 import ThemeToggle from "./ThemeToggle"
 
 export default function Header() {
-  console.log("Header")
-
   return (
     <div className="bg-background border-border ease-out-quint sticky top-0 z-50 border-b transition-colors duration-200">
       <div className="mx-auto h-16 w-full max-w-300 py-3">

@@ -1,3 +1,5 @@
+import { Category } from "./category"
+
 export interface Product {
   id: number
   name: string
@@ -15,4 +17,17 @@ export interface Product {
   quantity_sold: number
   price: number
   original_price: number
+  review_count: number
+  is_actived: boolean
+  categories: Category[]
+  images: ProductImage[]
+  created_at: string
+  updated_at: string
+  deleted_at?: string
+}
+
+interface ProductImage {
+  url: string
+  key: string
+  order_no?: number
 }
