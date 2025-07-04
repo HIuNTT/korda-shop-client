@@ -12,7 +12,7 @@ import { useDisclosure } from "@/hooks/use-disclosure"
 import LoginDialog from "@/modules/auth/components/LoginDialogl"
 import SignUpDialog from "@/modules/auth/components/sign-up"
 import { useUser } from "@/stores/user"
-import { ChevronDown, CircleUser, LogOut } from "lucide-react"
+import { ChevronDown, CircleUser, LogOut, ShoppingCart } from "lucide-react"
 import { LuUserRound } from "react-icons/lu"
 import { CgNotes } from "react-icons/cg"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -21,9 +21,16 @@ import { useGetProfile } from "@/modules/user/services/getProfile"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useLogout } from "@/modules/auth/services/logout"
 import { queryClient } from "@/configs/queryClient"
+import { useCountItemInCart } from "@/modules/cart/services/countItemInCart"
+import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
+import { useNavigate } from "react-router"
+import { paths } from "@/constants/paths"
 
 export default function AuthMenu() {
   const [open, setOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   const {
     auth,
@@ -33,6 +40,7 @@ export default function AuthMenu() {
     clear,
   } = useUser()
 
+  const countItemInCart = useCountItemInCart(!!user.id)
   const getProfile = useGetProfile(!!auth.access_token && !user.email)
   const logout = useLogout()
 
@@ -63,10 +71,20 @@ export default function AuthMenu() {
         onSuccess: () => {
           queryClient.clear()
           clear()
+          navigate(paths.home.getHref())
         },
         onError: () => clear(),
       },
     )
+  }
+
+  const handleClickCart = () => {
+    if (!user.id) {
+      disclosureLogin.onOpen()
+      toast("Vui lòng đăng nhập để xem giỏ hàng")
+      return
+    }
+    navigate(paths.cart.getHref())
   }
 
   useEffect(() => {
@@ -160,6 +178,21 @@ export default function AuthMenu() {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
+
+      <Button
+        variant="ghost"
+        size="icon"
+        isIconOnly
+        className="size-10 [&_svg:not([class*='size-'])]:size-4.5 [&:has(>div>i)>div]:size-4.5"
+        onClick={handleClickCart}
+      >
+        <div className="relative">
+          <ShoppingCart />
+          <Badge className="absolute -top-2 -right-2 h-4 min-w-4 rounded-full px-0.5 font-mono tabular-nums">
+            {countItemInCart.data || 0}
+          </Badge>
+        </div>
+      </Button>
 
       <Dialog open={disclosureLogin.isOpen} onOpenChange={disclosureLogin.onOpenChange}>
         <LoginDialog onClose={disclosureLogin.onClose} onOpenSignUp={disclosureSignUp.onOpen} />

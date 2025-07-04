@@ -74,7 +74,7 @@ export default function Gallery({ data }: Props) {
       >
         {data.map((image, idx) => (
           <SwiperSlide
-            className="[.swiper-slide-thumb-active]:border-primary !h-16 !w-16 cursor-pointer rounded-md border bg-white"
+            className="[.swiper-slide-thumb-active]:border-primary !h-16 !w-16 cursor-pointer rounded-md border bg-white opacity-60 [.swiper-slide-thumb-active]:opacity-100"
             key={idx}
           >
             <div className="flex h-full w-full items-center justify-center rounded-md">

@@ -77,6 +77,7 @@ export default function useUpload<T = unknown>({
     accept,
     maxSize: maxSize * 1024 * 1024,
     multiple,
+    maxFiles,
   })
 
   const uploadFiles = async (files: File[]) => {

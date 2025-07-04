@@ -58,7 +58,7 @@ export interface MySelectProps<
   OptionType extends BaseOptionType = DefaultOptionType,
 > extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue"> {
   fieldNames?: FieldNames
-  size?: "sm" | "default" | "lg"
+  size?: "sm" | "default" | "lg" | "sm"
 
   options?: OptionType[]
 
@@ -260,14 +260,16 @@ export const MySelect = React.forwardRef<HTMLButtonElement, MySelectProps<any, D
             className={cn(
               "group relative",
               "border-input data-[state=open]:ring-ring/50 data-[state=open]:border-ring [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 min-w-cascader flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-0.5 data-[state=open]:ring-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-              "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2",
+              "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2 data-[size=sm]:px-2.5",
               multiple &&
                 "py-0 data-[size=default]:min-h-9 data-[size=lg]:min-h-10 data-[size=sm]:min-h-8",
               !multiple && "data-[size=default]:h-9 data-[size=lg]:h-10 data-[size=sm]:h-8",
               className,
             )}
           >
-            {!displayValues.length && <span>{placeholder}</span>}
+            {!displayValues.length && (
+              <span className="text-muted-foreground select-none">{placeholder}</span>
+            )}
             {!multiple && displayValues.length && displayValues[0] ? (
               <span>{displayValues[0].label}</span>
             ) : null}

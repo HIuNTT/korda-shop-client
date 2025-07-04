@@ -11,6 +11,21 @@ interface CreateProductAttributeDto {
   attribute_values: { option_id?: number; raw_value?: string }[]
 }
 
+interface CreateProductVariantValueDto {
+  variant_id: number
+  original_price?: number
+  price: number
+  stock: number
+  index_map: number[]
+  image?: CreateProductImageDto
+}
+
+interface CreateProductVariationListDto {
+  type_id: number
+  custom_value: string
+  value_list: { value_id: number; custom_value: string }[]
+}
+
 export interface CreateProductDto {
   name: string
   description: string
@@ -21,12 +36,12 @@ export interface CreateProductDto {
   tax_vat?: boolean
   secondary_name?: string
   related_name?: string
-  stock: number
-  price: number
-  original_price?: number
+  group_id?: number
   category_ids: number[]
   images: CreateProductImageDto[]
   attributes?: CreateProductAttributeDto[]
+  variant_values: CreateProductVariantValueDto[]
+  variation_list: CreateProductVariationListDto[]
 }
 
 async function createProduct(data: CreateProductDto) {

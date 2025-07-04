@@ -4,6 +4,16 @@ export const paths = {
     getHref: () => "/",
   },
 
+  product: {
+    path: "/san-pham",
+    getHref: () => "/san-pham",
+  },
+
+  cart: {
+    path: "/gio-hang",
+    getHref: () => "/gio-hang",
+  },
+
   admin: {
     home: {
       path: "/admin",

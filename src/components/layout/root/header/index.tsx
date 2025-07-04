@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { LayoutGrid, ShoppingCart } from "lucide-react"
+import { LayoutGrid } from "lucide-react"
 import { Link } from "react-router"
 import Search from "./Search"
 import { paths } from "@/constants/paths"
@@ -23,14 +23,6 @@ export default function Header() {
           <Search />
           <div className="flex items-center gap-1">
             <AuthMenu />
-            <Button
-              variant="ghost"
-              size="icon"
-              isIconOnly
-              className="size-10 [&_svg:not([class*='size-'])]:size-4.5 [&:has(>div>i)>div]:size-4.5"
-            >
-              <ShoppingCart />
-            </Button>
             <Separator className="!h-6" orientation="vertical" />
             <ThemeToggle />
           </div>

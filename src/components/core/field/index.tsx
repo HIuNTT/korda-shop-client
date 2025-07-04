@@ -19,9 +19,10 @@ export type FieldProps = {
   errorMessage?: string
   labalPlacement?: "outside" | "outside-left"
   colon?: boolean
-  size?: "md" | "lg"
+  size?: "md" | "lg" | "sm"
   labelSpan?: number
   wrapperSpan?: number
+  labelWidth?: number
 } & (
   | InputProps
   | InputOTPProps
@@ -43,6 +44,7 @@ export default function Field({
   colon = true,
   labelSpan,
   wrapperSpan,
+  labelWidth,
   ...props
 }: FieldProps) {
   const { control } = useFormContext()
@@ -75,9 +77,11 @@ export default function Field({
                   "leading-none",
                   labalPlacement === "outside-left" && "flex h-9 items-center justify-end",
                   labalPlacement === "outside-left" && size === "lg" && "h-10",
+                  labalPlacement === "outside-left" && size === "sm" && "h-8",
                 )}
                 style={{
                   gridColumn: labelSpan ? `span ${labelSpan} / span ${labelSpan}` : undefined,
+                  width: labelWidth ? `${labelWidth}px` : undefined,
                 }}
               >
                 <FormLabel
@@ -110,20 +114,7 @@ export default function Field({
 
               {t === "input-upload-image" && (
                 <div>
-                  <InputUploadImage
-                    {...props}
-                    {...restField}
-                    onChange={(value) =>
-                      onChange(
-                        value
-                          .filter((item) => item.status === "done")
-                          .map((item) => ({
-                            key: item.key,
-                            url: item.url,
-                          })),
-                      )
-                    }
-                  />
+                  <InputUploadImage {...props} {...restField} onChange={onChange} />
                 </div>
               )}
 

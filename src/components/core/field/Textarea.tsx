@@ -8,7 +8,7 @@ export interface TextareaProps extends React.ComponentProps<"textarea"> {
   hideError?: boolean
 }
 
-export default function Textarea({ t, hideError, className, ...props }: TextareaProps) {
+export default function Textarea({ t, hideError, className, name, ...props }: TextareaProps) {
   if (t === "textarea") {
     return (
       <FormControl hideError={hideError}>

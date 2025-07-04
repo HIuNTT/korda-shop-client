@@ -31,3 +31,8 @@ interface ProductImage {
   key: string
   order_no?: number
 }
+
+export interface ProductGroup {
+  id: number
+  name: string
+}

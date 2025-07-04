@@ -8,7 +8,7 @@ export interface InputProps extends ShadcnInputProps {
   hideError?: boolean
 }
 
-export default function Input({ t, hideError, ...props }: InputProps) {
+export default function Input({ t, hideError, name, ...props }: InputProps) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   if (t === "input") {

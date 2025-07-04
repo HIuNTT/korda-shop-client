@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 const inputVariants = cva("", {
   variants: {
     size: {
+      sm: "h-8 px-2.5 [&_svg:not([class*='size-'])]:size-3.5",
       md: "h-9 px-3 [&_svg:not([class*='size-'])]:size-4",
       lg: "h-10 px-3.5 [&_svg:not([class*='size-'])]:size-4",
     },
@@ -20,6 +21,7 @@ export type InputProps = {
   endContent?: React.ReactNode
   type?: React.HTMLInputTypeAttribute
   placeholder?: string
+  inputClass?: React.ComponentProps<"input">["className"]
 } & React.ComponentProps<"div"> &
   Omit<React.ComponentProps<"input">, "size"> &
   VariantProps<typeof inputVariants>
@@ -35,6 +37,9 @@ function Input({
   onChange,
   id,
   inputMode,
+  inputClass,
+  defaultValue,
+  pattern,
   ...props
 }: InputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -48,8 +53,8 @@ function Input({
         inputVariants({ size, className }),
       )}
       data-size={size}
-      {...props}
       onClick={() => inputRef.current?.focus()}
+      {...props}
     >
       <div className="inline-flex h-full w-full items-center">
         {startContent}
@@ -67,9 +72,12 @@ function Input({
             "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground w-full bg-transparent text-base outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium md:text-sm",
             "data-[has-end-content=true]:pe-1.5 data-[has-start-content=true]:ps-1.5",
             "peer",
+            inputClass,
           )}
           placeholder={placeholder}
           inputMode={inputMode}
+          defaultValue={defaultValue}
+          pattern={pattern}
         />
         {endContent}
       </div>

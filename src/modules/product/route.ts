@@ -1,3 +1,4 @@
+import { paths } from "@/constants/paths"
 import { lazy } from "react"
 import { RouteObject } from "react-router"
 
@@ -8,7 +9,7 @@ export interface ProductParams {
 }
 
 export const productRoute: RouteObject = {
-  path: "san-pham",
+  path: paths.product.path.slice(1),
   children: [
     {
       path: ":slug",

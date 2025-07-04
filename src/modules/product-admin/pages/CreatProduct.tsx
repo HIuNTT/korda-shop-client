@@ -13,6 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import CreateFormFooter from "../components/CreateFormFooter"
 import { CreateProductDto, useCreateProduct } from "../services/createProduct"
 import { toast } from "sonner"
+import CreateFormVariation from "../components/CreateFormVariation"
+import { useGetProductGroup } from "../services/getProductGroup"
 
 const attributeValueSchema = z.object({
   option_id: z.number().optional(),
@@ -79,19 +81,43 @@ const imageSchema = z.object({
   url: z.string(),
 })
 
-const formSchema = z.object({
-  images: z.array(imageSchema).nonempty({
-    error: "Vui lòng tải lên ít nhất một hình ảnh sản phẩm",
-  }),
-  name: z.string().min(1, { error: "Tên sản phẩm không được để trống" }).max(120, {
-    error: "Tên sản phẩm không được vượt quá 120 ký tự",
-  }),
-  secondary_name: z.string().optional(),
-  related_name: z.string().optional(),
-  category_ids: z.array(z.array(z.number())).nonempty("Vui lòng chọn ít nhất một danh mục"),
-  description: z.string().min(1, "Mô tả sản phẩm không được để trống"),
-  highlight_features: z.string().min(1, "Đặc điểm nổi bật không được để trống"),
-  attributes: z.array(attributeSchema),
+const variantValueSchema = z.object({
+  value_id: z.number().default(0),
+  custom_value: z.string().optional().default(""),
+})
+
+const variationSchema = z
+  .object({
+    type_id: z.number().default(0),
+    custom_value: z.string().optional().default(""),
+    value_list: z.preprocess((val) => {
+      if (Array.isArray(val) && val.every((v) => typeof v === "number")) {
+        return val.map((id) => ({ value_id: id, custom_value: "" }))
+      }
+      return val
+    }, z.array(variantValueSchema)),
+  })
+  .check((ctx) => {
+    if (ctx.value.value_list.length === 0) {
+      ctx.issues.push({
+        code: "custom",
+        input: ctx.value,
+        message: "Không được để trống",
+        path: ["value_list"],
+      })
+    }
+    if (!ctx.value.custom_value.trim() && !ctx.value.type_id) {
+      ctx.issues.push({
+        code: "custom",
+        input: ctx.value,
+        message: "Không được để trống",
+        path: ["id"],
+      })
+    }
+  })
+
+const variantSchema = z.object({
+  variant_id: z.number().default(0),
   original_price: z.preprocess((val) => {
     if (!val) return undefined
     return val
@@ -108,19 +134,47 @@ const formSchema = z.object({
         error: "Giá trị phải ít nhất 1.000 VNĐ",
       }),
   ),
-  stock: z.preprocess(
-    (val) => (typeof val === "string" && val.trim() === "" ? undefined : Number(val)),
-    z.number({
-      error: (issue) => {
-        if (issue.input === undefined) return "Không được để trống"
-      },
-    }),
-  ),
-  product_state: z.string().optional(),
-  included_accessories: z.string().optional(),
-  warranty_information: z.string().optional(),
-  tax_vat: z.coerce.boolean().optional(),
+  stock: z
+    .preprocess(
+      (val) => (typeof val === "string" && val.trim() === "" ? undefined : Number(val)),
+      z.number({
+        error: (issue) => {
+          if (issue.input === undefined) return "Không được để trống"
+        },
+      }),
+    )
+    .default(0),
+  index_map: z.array(z.number()).default([0]),
+  image: imageSchema.optional(),
 })
+
+const formSchema = z
+  .object({
+    images: z.array(imageSchema).nonempty({
+      error: "Vui lòng tải lên ít nhất một hình ảnh sản phẩm",
+    }),
+    name: z.string().min(1, { error: "Tên sản phẩm không được để trống" }).max(120, {
+      error: "Tên sản phẩm không được vượt quá 120 ký tự",
+    }),
+    secondary_name: z.string().optional(),
+    related_name: z.string().optional(),
+    category_ids: z.array(z.array(z.number())).nonempty("Vui lòng chọn ít nhất một danh mục"),
+    description: z.string().min(1, "Mô tả sản phẩm không được để trống"),
+    highlight_features: z.string().min(1, "Đặc điểm nổi bật không được để trống"),
+    attributes: z.array(attributeSchema),
+    variant_values: z.array(variantSchema),
+    variation_list: z.array(variationSchema),
+
+    product_state: z.string().optional(),
+    included_accessories: z.string().optional(),
+    warranty_information: z.string().optional(),
+    tax_vat: z.coerce.boolean().optional(),
+    group_id: z.number().optional(),
+  })
+  .refine((data) => !(data.group_id && !data.related_name), {
+    message: "Đã chọn nhóm sản phẩm, không được để trống",
+    path: ["related_name"],
+  })
 
 function getIndex() {
   let index = 0
@@ -129,8 +183,11 @@ function getIndex() {
   }
 }
 
+export type FormProductValues = z.input<typeof formSchema>
+
 export default function CreatProduct() {
   const { data: categoryOptions } = useGetCategoryTree()
+  const getProductGroup = useGetProductGroup()
   const { mutate, data: attributesData, isPending } = useGetAttributes()
   const createProduct = useCreateProduct()
 
@@ -147,9 +204,17 @@ export default function CreatProduct() {
       description: "",
       highlight_features: "",
       attributes: [],
-      price: "",
-      stock: 0,
+      related_name: undefined,
       tax_vat: "true",
+      variant_values: [
+        {
+          variant_id: 0,
+          original_price: "",
+          price: "",
+          stock: 0,
+          index_map: [0],
+        },
+      ],
     },
   })
 
@@ -214,6 +279,7 @@ export default function CreatProduct() {
                   isRequired
                   name="images"
                   maxFiles={0}
+                  maxSize={10}
                   t="input-upload-image"
                   label="Hình ảnh sản phẩm"
                   description="Ảnh đầu tiên sẽ làm ảnh bìa của sản phẩm"
@@ -402,50 +468,9 @@ export default function CreatProduct() {
                   Thông tin bán hàng
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+              <CardContent>
                 {categoriesField && categoriesField.length > 0 ? (
-                  <>
-                    <Field
-                      size="lg"
-                      isRequired
-                      name="price"
-                      t="input-number"
-                      label="Giá"
-                      startContent={
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground text-xs">₫</span>
-                          <span className="bg-border w-[1px] group-data-[size=lg]:h-5 group-data-[size=md]:h-4"></span>
-                        </div>
-                      }
-                      placeholder="Nhập vào"
-                      description="Giá hiện tại của sản phẩm, nếu sản phẩm đang giảm giá thì đây là giá sau khi đã giảm"
-                    />
-                    <Field
-                      size="lg"
-                      name="original_price"
-                      t="input-number"
-                      label="Giá gốc"
-                      startContent={
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground text-xs">₫</span>
-                          <span className="bg-border w-[1px] group-data-[size=lg]:h-5 group-data-[size=md]:h-4"></span>
-                        </div>
-                      }
-                      placeholder="Tùy chọn"
-                      description="Giá ban đầu của sản phẩm, bỏ trống nếu sản phẩm không giảm giá"
-                    />
-                    <Field size="lg" isRequired name="stock" t="input-number" label="Kho hàng" />
-                    <Field
-                      t="radio-group"
-                      options={[
-                        { label: "Có", value: true },
-                        { label: "Không", value: false },
-                      ]}
-                      label="Giá sản phẩm có gồm thuế VAT không?"
-                      name="tax_vat"
-                      size="lg"
-                    />
-                  </>
+                  <CreateFormVariation />
                 ) : (
                   <div className="text-muted-foreground text-sm">
                     Có thể điều chỉnh sau khi chọn danh mục
@@ -484,11 +509,34 @@ export default function CreatProduct() {
                       placeholder="Bảo hành 12 tháng, 1 đổi 1"
                     />
                     <Field
+                      t="radio-group"
+                      options={[
+                        { label: "Có", value: true },
+                        { label: "Không", value: false },
+                      ]}
+                      label="Giá sản phẩm có gồm thuế VAT không?"
+                      name="tax_vat"
+                      size="lg"
+                    />
+                    <Field
                       name="secondary_name"
                       t="input"
                       label="Tên phụ"
                       size="lg"
                       placeholder="CPU + Dung lượng RAM + Dung lượng ổ cứng + Độ phân giải màn hình + HĐH + Màu"
+                    />
+                    <div></div>
+                    <Field
+                      name="group_id"
+                      t="input-my-select"
+                      label="Nhóm sản phẩm"
+                      size="lg"
+                      placeholder="Chọn nhóm sản phẩm"
+                      description="Nếu chọn nhóm sản phẩm, bắt buộc nhập tên phiên bản"
+                      options={getProductGroup.data || []}
+                      fieldNames={{ label: "name", value: "id" }}
+                      searchPlaceholder="Nhập từ khóa để tìm kiếm"
+                      allowClear
                     />
                     <Field
                       name="related_name"

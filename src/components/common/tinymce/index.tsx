@@ -44,6 +44,8 @@ export default function TinymceEditor(props: TinymceEditorProps) {
     quickbars_selection_toolbar:
       "bold italic underline | blocks | bullist numlist | blockquote quicklink",
     contextmenu: "undo redo | listprops | inserttable | cell row column deletetable | help",
+    valid_elements: "*[*]",
+    extended_valid_elements: "*[*]",
     ...init,
   }
 

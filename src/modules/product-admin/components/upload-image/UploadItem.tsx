@@ -8,19 +8,32 @@ import Item from "./Item"
 interface UploadItemProps {
   file: UploadFile
   onRemove: (file: UploadFile) => void
+  disabled?: boolean
+  wrapperClass?: string
 }
 
-export default function UploadItem({ file, onRemove }: UploadItemProps) {
+export default function UploadItem({
+  file,
+  onRemove,
+  disabled = false,
+  wrapperClass,
+}: UploadItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: file.uid,
-    disabled: file.status !== "done",
+    disabled: disabled || file.status !== "done",
   })
   const style: CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
   }
   return (
-    <WrapperItem ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <WrapperItem
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={wrapperClass}
+    >
       <Item file={file} onRemove={onRemove} isDragging={isDragging} />
     </WrapperItem>
   )

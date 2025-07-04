@@ -11,10 +11,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { House } from "lucide-react"
 import { Link } from "react-router"
 import { cn } from "@/lib/utils"
+import { BreadcrumbItem as BreadcrumbItemProduct } from "../../modules/product/services/getProduct"
 
 interface Props {
   isLoading: boolean
-  breadcrumbs?: { name: string; path: string }[]
+  breadcrumbs?: BreadcrumbItemProduct[]
   name?: string
 }
 
@@ -81,7 +82,7 @@ export default function Breadcrumbs({ isLoading, breadcrumbs, name }: Props) {
           </Breadcrumb>
         </div>
       </div>
-      <div className="pt-16"></div>
+      <div className="pt-11"></div>
     </div>
   )
 }

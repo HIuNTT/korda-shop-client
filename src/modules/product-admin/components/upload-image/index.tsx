@@ -22,6 +22,7 @@ import {
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import UploadItem from "./UploadItem"
 import Item from "./Item"
+import { cn } from "@/lib/utils"
 
 type UploadFileStatus = "uploading" | "done" | "error" | "removed"
 
@@ -43,8 +44,12 @@ export interface UploadImageProps {
   maxFiles?: number
   multiple?: boolean
   maxSize?: number // in MB, default is 2MB
-  onChange?: (value: UploadFile[]) => void
-  value?: Partial<UploadFile>[]
+  onChange?: (value: Partial<UploadFile>[] | Partial<UploadFile>) => void
+  value?: Partial<UploadFile>[] | Partial<UploadFile>
+  showUploadTitle?: boolean
+  className?: HTMLDivElement["className"]
+  wrapperClass?: HTMLDivElement["className"]
+  disabled?: boolean
 }
 
 function toObjectFile(file: Partial<UploadFile>): UploadFile {
@@ -134,9 +139,15 @@ export default function UploadImage({
   maxSize = 2,
   onChange,
   value,
+  showUploadTitle = true,
+  className,
+  wrapperClass,
+  disabled = false,
 }: UploadImageProps) {
   const [fileList, setFileList] = useState<UploadFile[]>(
-    value?.map((item) => toObjectFile(item)) || [],
+    (Array.isArray(value)
+      ? value?.map((item) => toObjectFile(item))
+      : value && [toObjectFile(value)]) || [],
   )
   const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -178,7 +189,14 @@ export default function UploadImage({
           }
           return item
         }) as UploadFile[]
-        onChange?.(nextFileList)
+
+        const triggerValues = multiple
+          ? nextFileList.map((item) => ({
+              key: item.key,
+              url: item.url,
+            }))
+          : { key: nextFileList[0].key, url: nextFileList[0].url }
+        onChange?.(triggerValues)
         return nextFileList
       }),
     )
@@ -204,7 +222,13 @@ export default function UploadImage({
     const matchKey = file.uid !== undefined ? "uid" : "name"
     setFileList((prevList) => {
       const nextFileList = prevList.filter((item) => item[matchKey] !== file[matchKey])
-      onChange?.(nextFileList)
+      const triggerValues = multiple
+        ? nextFileList.map((item) => ({
+            key: item.key,
+            url: item.url,
+          }))
+        : { key: nextFileList[0]?.key, url: nextFileList[0]?.url }
+      onChange?.(triggerValues)
       return nextFileList
     })
   }
@@ -270,20 +294,33 @@ export default function UploadImage({
       <SortableContext items={items}>
         <div className="flex flex-wrap gap-4">
           {fileList.map((file) => (
-            <UploadItem key={file.uid} file={file} onRemove={onRemove} />
+            <UploadItem
+              key={file.uid}
+              file={file}
+              onRemove={onRemove}
+              disabled={disabled}
+              wrapperClass={wrapperClass}
+            />
           ))}
           {(fileList.length < maxFiles || maxFiles === 0) && (
             <div className="hover:bg-primary/3">
               <div
                 {...getRootProps()}
-                className="hover:border-primary hover:bg-primary/3 border-border flex size-20 cursor-pointer items-center justify-center rounded-sm border border-dashed bg-transparent transition-all"
+                className={cn(
+                  "hover:border-primary hover:bg-primary/3 border-border flex size-20 cursor-pointer items-center justify-center rounded-sm border border-dashed bg-transparent transition-all",
+                  className,
+                )}
               >
                 <input {...getInputProps()} />
                 <div className="flex flex-col items-center justify-center gap-1">
                   <ImagePlus />
-                  <div className="text-center text-xs leading-3.5">
-                    {maxFiles ? `Thêm hình ảnh (${fileList.length}/${maxFiles})` : "Thêm hình ảnh"}
-                  </div>
+                  {showUploadTitle && (
+                    <div className="text-center text-xs leading-3.5">
+                      {maxFiles
+                        ? `Thêm hình ảnh (${fileList.length}/${maxFiles})`
+                        : "Thêm hình ảnh"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

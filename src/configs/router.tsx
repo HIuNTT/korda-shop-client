@@ -4,6 +4,7 @@ import Authorization from "@/components/layout/Authorization"
 import RootLayout from "@/components/layout/root"
 import { paths } from "@/constants/paths"
 import { Roles } from "@/constants/role"
+import { cartRoute } from "@/modules/cart/route"
 import { homeRoute } from "@/modules/home/route"
 import { adminProductRoute } from "@/modules/product-admin/route"
 import { productRoute } from "@/modules/product/route"
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    children: [homeRoute, productRoute],
+    children: [homeRoute, productRoute, cartRoute],
   },
   {
     path: paths.admin.home.getHref(),
