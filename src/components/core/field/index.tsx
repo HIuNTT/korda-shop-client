@@ -102,8 +102,19 @@ export default function Field({
                 gridColumn: wrapperSpan ? `span ${wrapperSpan} / span ${wrapperSpan}` : undefined,
               }}
             >
-              {(t === "input" || t === "password-input" || t === "input-number") && (
-                <Input {...props} {...field} />
+              {(t === "input" || t === "password-input") && <Input {...props} {...field} />}
+
+              {t === "input-number" && (
+                <Input
+                  {...props}
+                  {...field}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const v = e.target.value
+                    if (/^\d*$/.test(v)) {
+                      field.onChange(v)
+                    }
+                  }}
+                />
               )}
 
               {t === "input-otp" && <InputOTP {...props} {...field} />}
@@ -144,7 +155,7 @@ export default function Field({
               {t === "input-my-select" && (
                 <InputMySelect
                   {...props}
-                  defaultValue={field.value}
+                  defaultValue={field.value || undefined}
                   onValueChange={field.onChange}
                 />
               )}

@@ -11,6 +11,8 @@
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
 
+@import "nprogress/nprogress.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -77,6 +79,12 @@
   --color-primary-8: var(--primary-8);
   --color-primary-9: var(--primary-9);
   --color-primary-10: var(--primary-10);
+  --color-content-1: var(--content-1);
+  --color-content-2: var(--content-2);
+  --color-content-3: var(--content-3);
+  --color-content-4: var(--content-4);
+
+  --shadow-small: var(--box-shadow-small);
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -141,6 +149,14 @@
   --primary-8: #b91c1c;
   --primary-9: #991b1b;
   --primary-10: #7f1d1d;
+  --content-1: #f7f7f8;
+  --content-2: #f4f4f5;
+  --content-3: #e4e4e7;
+  --content-4: #d4d4d8;
+
+  --box-shadow-small:
+    0px 0px 5px 0px rgba(0, 0, 0, 0.02), 0px 2px 10px 0px rgba(0, 0, 0, 0.06),
+    0px 0px 1px 0px rgba(0, 0, 0, 0.3);
 
   --star: oklch(87.677% 0.1627 90.648);
 }
@@ -202,6 +218,14 @@
   --primary-3: #b91c1c;
   --primary-2: #991b1b;
   --primary-1: #7f1d1d;
+  --content-1: #18181b;
+  --content-2: #27272a;
+  --content-3: #3f3f46;
+  --content-4: #52525b;
+
+  --box-shadow-small:
+    0px 0px 5px 0px rgba(0, 0, 0, 0.05), 0px 2px 10px 0px rgba(0, 0, 0, 0.2),
+    inset 0px 0px 1px 0px hsla(0, 0%, 100%, 0.15);
 
   --star: oklch(87.677% 0.1627 90.648);
 }
@@ -211,7 +235,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family:
       -apple-system, BlinkMacSystemFont, "Noto Sans", "Public Sans", "Segoe UI ", "Segoe UI",
       "Open Sans", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
@@ -306,4 +330,14 @@
 
 .desc-content img {
   border-radius: 8px;
+}
+
+#nprogress .bar {
+  @apply bg-primary;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--color-primary),
+    0 0 5px var(--color-primary);
 }

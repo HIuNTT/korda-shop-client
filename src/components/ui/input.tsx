@@ -40,6 +40,7 @@ function Input({
   inputClass,
   defaultValue,
   pattern,
+  maxLength,
   ...props
 }: InputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -69,7 +70,7 @@ function Input({
           data-slot="input"
           data-filled={value ? true : undefined}
           className={cn(
-            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground w-full bg-transparent text-base outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium md:text-sm",
+            "file:text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
             "data-[has-end-content=true]:pe-1.5 data-[has-start-content=true]:ps-1.5",
             "peer",
             inputClass,
@@ -78,6 +79,7 @@ function Input({
           inputMode={inputMode}
           defaultValue={defaultValue}
           pattern={pattern}
+          maxLength={maxLength}
         />
         {endContent}
       </div>

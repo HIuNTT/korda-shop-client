@@ -1,8 +1,5 @@
 import { paths } from "@/constants/paths"
-import { lazy } from "react"
 import { RouteObject } from "react-router"
-
-const Product = lazy(() => import("./pages/Product"))
 
 export interface ProductParams {
   slug: string
@@ -13,7 +10,12 @@ export const productRoute: RouteObject = {
   children: [
     {
       path: ":slug",
-      Component: Product,
+      lazy: async () => {
+        const { default: Product } = await import("./pages/Product")
+        return {
+          Component: Product,
+        }
+      },
     },
   ],
 }

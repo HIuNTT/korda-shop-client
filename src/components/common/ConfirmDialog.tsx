@@ -19,6 +19,7 @@ interface Props {
   btnAcceptProps: ButtonProps
   className?: string
   cancelBtnText?: string
+  showCloseButton?: boolean
 }
 
 export interface ConfirmDialogRef {
@@ -28,7 +29,15 @@ export interface ConfirmDialogRef {
 
 const ConfirmDialog = forwardRef<ConfirmDialogRef, Props>(
   (
-    { title = null, description = null, body, btnAcceptProps, className, cancelBtnText = "Hủy" },
+    {
+      title = null,
+      description = null,
+      body,
+      btnAcceptProps,
+      className,
+      cancelBtnText = "Hủy",
+      showCloseButton = false,
+    },
     ref,
   ) => {
     const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure()
@@ -44,7 +53,7 @@ const ConfirmDialog = forwardRef<ConfirmDialogRef, Props>(
 
     return (
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className={cn(className)}>
+        <DialogContent showCloseButton={showCloseButton} className={cn(className)}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && <DialogDescription>{description}</DialogDescription>}
@@ -52,7 +61,7 @@ const ConfirmDialog = forwardRef<ConfirmDialogRef, Props>(
           {body}
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" disabled={btnAcceptProps.isLoading}>
+              <Button variant="outline" className="flex-1" disabled={btnAcceptProps.isLoading}>
                 {cancelBtnText}
               </Button>
             </DialogClose>

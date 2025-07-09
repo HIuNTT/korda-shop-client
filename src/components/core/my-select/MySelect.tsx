@@ -237,6 +237,10 @@ export const MySelect = React.forwardRef<HTMLButtonElement, MySelectProps<any, D
     }
 
     React.useEffect(() => {
+      setInternalValue(convertToLabelValues(value || defaultValue))
+    }, [value, defaultValue, mergedOptions])
+
+    React.useEffect(() => {
       const close = () => setOpen(false)
 
       window.addEventListener("blur", close)
@@ -267,7 +271,7 @@ export const MySelect = React.forwardRef<HTMLButtonElement, MySelectProps<any, D
               className,
             )}
           >
-            {!displayValues.length && (
+            {(!displayValues.length || !displayValues[0].label) && (
               <span className="text-muted-foreground select-none">{placeholder}</span>
             )}
             {!multiple && displayValues.length && displayValues[0] ? (
@@ -331,6 +335,7 @@ export const MySelect = React.forwardRef<HTMLButtonElement, MySelectProps<any, D
           className="w-auto p-0"
           align="start"
           style={{ width: "var(--radix-popover-trigger-width)" }}
+          onWheel={(e) => e.stopPropagation()}
         >
           <Command>
             <CommandInput placeholder={searchPlaceholder} />

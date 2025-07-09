@@ -11,28 +11,6 @@ export interface InputProps extends ShadcnInputProps {
 export default function Input({ t, hideError, name, ...props }: InputProps) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
-  if (t === "input") {
-    return (
-      <FormControl hideError={hideError}>
-        <ShadcnInput {...props} />
-      </FormControl>
-    )
-  }
-
-  if (t === "input-number") {
-    const onInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      const numericValue = value.replace(/[^0-9]+/g, "")
-      e.target.value = numericValue
-      props.onChange?.(e)
-    }
-    return (
-      <FormControl hideError={hideError}>
-        <ShadcnInput {...props} inputMode="numeric" onChange={onInternalChange} />
-      </FormControl>
-    )
-  }
-
   if (t === "password-input") {
     return (
       <FormControl hideError={hideError}>
@@ -57,6 +35,9 @@ export default function Input({ t, hideError, name, ...props }: InputProps) {
       </FormControl>
     )
   }
-
-  return null
+  return (
+    <FormControl hideError={hideError}>
+      <ShadcnInput {...props} />
+    </FormControl>
+  )
 }

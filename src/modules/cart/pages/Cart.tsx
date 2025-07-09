@@ -98,7 +98,12 @@ export default function Cart() {
                   <div className="bg-background flex items-center justify-between rounded-lg px-4 py-2 md:px-5 md:py-2.5">
                     <div className="flex h-6 items-center gap-2 md:gap-3">
                       <Checkbox
-                        checked={selectedIds.size === cart.products.length}
+                        checked={
+                          selectedIds.size === cart.products.length ||
+                          (selectedIds.size > 0 &&
+                            selectedIds.size < cart.products.length &&
+                            "indeterminate")
+                        }
                         onCheckedChange={toggleAllSelection}
                       />
                       <span className="text-sm font-medium">{`Chọn tất cả (${selectedIds.size})`}</span>

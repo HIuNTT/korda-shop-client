@@ -4,6 +4,7 @@ import Authorization from "@/components/layout/Authorization"
 import RootLayout from "@/components/layout/root"
 import { paths } from "@/constants/paths"
 import { Roles } from "@/constants/role"
+import { accountRoute } from "@/modules/account/route"
 import { cartRoute } from "@/modules/cart/route"
 import { homeRoute } from "@/modules/home/route"
 import { adminProductRoute } from "@/modules/product-admin/route"
@@ -14,7 +15,11 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    children: [homeRoute, productRoute, cartRoute],
+    HydrateFallback: () => null,
+    children: [homeRoute, productRoute, cartRoute, accountRoute],
+    handle: {
+      crumb: () => "Trang chủ",
+    },
   },
   {
     path: paths.admin.home.getHref(),

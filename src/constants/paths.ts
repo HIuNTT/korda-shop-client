@@ -14,6 +14,25 @@ export const paths = {
     getHref: () => "/gio-hang",
   },
 
+  account: {
+    root: {
+      path: "/tai-khoan",
+      getHref: () => "/tai-khoan",
+    },
+    info: {
+      path: "/thong-tin-tai-khoan",
+      getHref: () => "/tai-khoan/thong-tin-tai-khoan",
+    },
+    address: {
+      path: "/so-dia-chi",
+      getHref: () => "/tai-khoan/so-dia-chi",
+    },
+    order: {
+      path: "/don-hang",
+      getHref: () => "/tai-khoan/don-hang",
+    },
+  },
+
   admin: {
     home: {
       path: "/admin",

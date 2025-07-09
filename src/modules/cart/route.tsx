@@ -1,10 +1,7 @@
 import Authorization from "@/components/layout/Authorization"
 import { paths } from "@/constants/paths"
 import { Roles } from "@/constants/role"
-import { lazy } from "react"
 import { RouteObject } from "react-router"
-
-const Cart = lazy(() => import("./pages/Cart"))
 
 export const cartRoute: RouteObject = {
   path: paths.cart.path.slice(1),
@@ -12,7 +9,12 @@ export const cartRoute: RouteObject = {
   children: [
     {
       path: "",
-      Component: Cart,
+      lazy: async () => {
+        let { default: Cart } = await import("./pages/Cart")
+        return {
+          Component: Cart,
+        }
+      },
     },
   ],
 }

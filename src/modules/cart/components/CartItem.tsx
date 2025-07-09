@@ -239,6 +239,7 @@ export default function CartItem({ data }: Props) {
         title={<span className="text-destructive">Xác Nhận Xóa</span>}
         btnAcceptProps={{
           children: "Xóa",
+          className: "flex-1",
           onClick: () => handleDeleteItem(data.id),
           type: "submit",
           isLoading: deleteCartItem.isPending,
