@@ -14,6 +14,11 @@ export const paths = {
     getHref: () => "/gio-hang",
   },
 
+  order: {
+    path: "/dat-hang",
+    getHref: () => "/dat-hang",
+  },
+
   account: {
     root: {
       path: "/tai-khoan",

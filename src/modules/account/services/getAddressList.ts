@@ -6,9 +6,10 @@ async function getAddressList() {
   return (await api.get<API.BaseResponse<Address[]>>("/account/address")).data.data
 }
 
-export function useGetAddressList() {
+export function useGetAddressList(enabled?: boolean, key?: string) {
   return useQuery({
-    queryKey: ["get-address-list"],
+    queryKey: ["get-address-list", key],
     queryFn: getAddressList,
+    enabled,
   })
 }

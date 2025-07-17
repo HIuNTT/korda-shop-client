@@ -1,40 +1,43 @@
 import WaveIcon from "@/components/icons/WaveIcon"
 import { Button } from "@/components/ui/button"
-import { paths } from "@/constants/paths"
-import { useCreateQuote } from "@/modules/order/services/createQuote"
-import { useCart } from "@/stores/cart"
+import { QuotePrices as QuotePricesProps } from "@/types/order"
 import { formatCurrency } from "@/utils/number"
-import { isEmpty } from "lodash-es"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
-import { useNavigate } from "react-router"
+import { SubmitHandler, useFormContext } from "react-hook-form"
+import { CreateOrderFormSchema } from "../pages/Order"
+import { useCreateOrder } from "../services/createOrder"
 import { toast } from "sonner"
+import { useNavigate } from "react-router"
+import { queryClient } from "@/configs/queryClient"
+import { useCart } from "@/stores/cart"
 
-export default function CartPrices() {
+interface Props {
+  prices: QuotePricesProps
+}
+
+export default function QuotePrices({ prices }: Props) {
   const [expanded, setExpanded] = useState<boolean>(false)
 
+  const { selectedIds } = useCart()
   const navigate = useNavigate()
 
-  const { prices, selectedIds } = useCart()
+  const form = useFormContext<CreateOrderFormSchema>()
 
-  const createQuote = useCreateQuote()
+  const createOrder = useCreateOrder()
 
-  const handleClickBuy = () => {
-    if (isEmpty(selectedIds)) {
-      toast.warning("Vui lòng chọn ít nhất một sản phẩm để tiến hành mua hàng")
-      return
-    }
-
-    createQuote.mutate(
-      {
-        selected_ids: [...selectedIds],
+  const onSubmit: SubmitHandler<CreateOrderFormSchema> = (data) => {
+    createOrder.mutate(data, {
+      onSuccess: () => {
+        queryClient.refetchQueries({
+          queryKey: ["count-item-in-cart"],
+        })
+        selectedIds.clear()
+        toast.success("Đặt hàng thành công")
+        form.reset()
+        navigate("/")
       },
-      {
-        onSuccess: () => {
-          navigate(paths.order.getHref())
-        },
-      },
-    )
+    })
   }
 
   return (
@@ -75,6 +78,16 @@ export default function CartPrices() {
               </div>
             </div>
           )}
+          <div className="flex items-center justify-between">
+            <p className="text-xs">Phí vận chuyển</p>
+            {prices.estimated_shipping_price > 0 ? (
+              <div className="text-base font-medium">
+                {formatCurrency(prices.estimated_shipping_price)}
+              </div>
+            ) : (
+              <div className="text-xs">Miễn phí</div>
+            )}
+          </div>
           <div className="border-border border-b border-dashed"></div>
           <div className="flex items-center justify-between">
             <p className="text-xs">Cần thanh toán</p>
@@ -91,13 +104,23 @@ export default function CartPrices() {
           </span>
         </div>
         <Button
-          isLoading={createQuote.isPending}
           size="lg"
           className="mt-3 h-14 text-base"
-          onClick={handleClickBuy}
+          isLoading={createOrder.isPending}
+          onClick={form.handleSubmit(onSubmit)}
         >
-          Mua Hàng
+          Đặt Hàng
         </Button>
+        <div className="text-center text-xs">
+          <p>Bằng việc tiến hành đặt mua hàng, bạn đồng ý với</p>
+          <div>
+            <span className="cursor-pointer font-medium underline">Điều khoản dịch vụ</span> và{" "}
+            <span className="cursor-pointer font-medium underline">
+              Chính sách xử lý dữ liệu cá nhân
+            </span>
+          </div>
+          <p>của Korda Shop</p>
+        </div>
       </div>
       <WaveIcon className="text-background w-full" fill="currentColor" />
     </div>

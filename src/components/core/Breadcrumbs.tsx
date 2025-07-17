@@ -17,9 +17,10 @@ interface Props {
   isLoading: boolean
   breadcrumbs?: BreadcrumbItemProduct[]
   name?: string
+  length?: number
 }
 
-export default function Breadcrumbs({ isLoading, breadcrumbs, name }: Props) {
+export default function Breadcrumbs({ isLoading, breadcrumbs, name, length = 4 }: Props) {
   const [offset, setOffset] = React.useState(0)
 
   React.useEffect(() => {
@@ -44,7 +45,7 @@ export default function Breadcrumbs({ isLoading, breadcrumbs, name }: Props) {
           <Breadcrumb>
             {isLoading ? (
               <BreadcrumbList className="flex-nowrap overflow-x-auto">
-                {Array(4)
+                {Array(length)
                   .fill("")
                   .map((_, idx) => (
                     <React.Fragment key={idx}>

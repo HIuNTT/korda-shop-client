@@ -3,11 +3,21 @@ import { Tooltip as ShadcnTooltip, TooltipContent, TooltipTrigger } from "@/comp
 
 interface Props extends Omit<ComponentProps<typeof TooltipContent>, "content"> {
   content: ReactNode
+  isDisplay?: boolean
+  delayDuration?: number
 }
 
-export default function Tooltip({ content, children, ...props }: Props) {
+export default function Tooltip({
+  content,
+  children,
+  isDisplay = true,
+  delayDuration,
+  ...props
+}: Props) {
+  if (!isDisplay) return children
+
   return (
-    <ShadcnTooltip>
+    <ShadcnTooltip delayDuration={delayDuration}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent {...props}>{content}</TooltipContent>
     </ShadcnTooltip>

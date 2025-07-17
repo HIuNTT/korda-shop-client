@@ -27,7 +27,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
+  --color-primary: var(--primary-6);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -38,7 +38,7 @@
   --color-destructive: var(--destructive);
   --color-border: var(--border);
   --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-ring: var(--primary-6);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -83,6 +83,26 @@
   --color-content-2: var(--content-2);
   --color-content-3: var(--content-3);
   --color-content-4: var(--content-4);
+  --color-success-1: var(--success-1);
+  --color-success-2: var(--success-2);
+  --color-success-3: var(--success-3);
+  --color-success-4: var(--success-4);
+  --color-success-5: var(--success-5);
+  --color-success-6: var(--success-6);
+  --color-success-7: var(--success-7);
+  --color-success-8: var(--success-8);
+  --color-success-9: var(--success-9);
+  --color-success-10: var(--success-10);
+  --color-gold-1: var(--gold-1);
+  --color-gold-2: var(--gold-2);
+  --color-gold-3: var(--gold-3);
+  --color-gold-4: var(--gold-4);
+  --color-gold-5: var(--gold-5);
+  --color-gold-6: var(--gold-6);
+  --color-gold-7: var(--gold-7);
+  --color-gold-8: var(--gold-8);
+  --color-gold-9: var(--gold-9);
+  --color-gold-10: var(--gold-10);
 
   --shadow-small: var(--box-shadow-small);
 
@@ -101,7 +121,6 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #dc2626;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -112,7 +131,6 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: #dc2626;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -139,20 +157,40 @@
   --blue-8: #0037c1;
   --blue-9: #0002c9;
   --blue-10: #002174;
-  --primary-1: #fef2f2;
-  --primary-2: #fee2e2;
-  --primary-3: #fecaca;
-  --primary-4: #fca5a5;
-  --primary-5: #f87171;
-  --primary-6: #ef4444;
-  --primary-7: #dc2626;
-  --primary-8: #b91c1c;
-  --primary-9: #991b1b;
-  --primary-10: #7f1d1d;
+  --primary-1: #fff2f0;
+  --primary-2: #ffd5cf;
+  --primary-3: #ffafa6;
+  --primary-4: #f58078;
+  --primary-5: #e8524d;
+  --primary-6: #dc2626;
+  --primary-7: #b5161b;
+  --primary-8: #8f0a13;
+  --primary-9: #69020c;
+  --primary-10: #420109;
   --content-1: #f7f7f8;
   --content-2: #f4f4f5;
   --content-3: #e4e4e7;
   --content-4: #d4d4d8;
+  --success-1: #edffee;
+  --success-2: #d9f7be;
+  --success-3: #b7eb8f;
+  --success-4: #95de64;
+  --success-5: #73d13d;
+  --success-6: #52c41a;
+  --success-7: #389e0d;
+  --success-8: #237804;
+  --success-9: #135200;
+  --success-10: #092b00;
+  --gold-1: #fffbe6;
+  --gold-2: #fff1b8;
+  --gold-3: #ffe58f;
+  --gold-4: #ffd666;
+  --gold-5: #ffc53d;
+  --gold-6: #faad14;
+  --gold-7: #d48806;
+  --gold-8: #ad6800;
+  --gold-9: #874d00;
+  --gold-10: #613400;
 
   --box-shadow-small:
     0px 0px 5px 0px rgba(0, 0, 0, 0.02), 0px 2px 10px 0px rgba(0, 0, 0, 0.06),
@@ -169,7 +207,6 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: #dc2626;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -180,8 +217,6 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  /* --ring: oklch(0.556 0 0); */
-  --ring: #dc2626;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -208,20 +243,40 @@
   --blue-3: #0037c1;
   --blue-2: #0002c9;
   --blue-1: #002174;
-  --primary-10: #fef2f2;
-  --primary-9: #fee2e2;
-  --primary-8: #fecaca;
-  --primary-7: #fca5a5;
-  --primary-6: #f87171;
-  --primary-5: #ef4444;
-  --primary-4: #dc2626;
-  --primary-3: #b91c1c;
-  --primary-2: #991b1b;
-  --primary-1: #7f1d1d;
+  --primary-10: #f2ccc7;
+  --primary-9: #e69f97;
+  --primary-8: #d9746c;
+  --primary-7: #cc4a45;
+  --primary-6: #ce2222;
+  --primary-5: #b8181d;
+  --primary-4: #991418;
+  --primary-3: #730910;
+  --primary-2: #4d020a;
+  --primary-1: #260106;
   --content-1: #18181b;
   --content-2: #27272a;
   --content-3: #3f3f46;
   --content-4: #52525b;
+  --success-1: #162312;
+  --success-2: #1d3712;
+  --success-3: #274916;
+  --success-4: #306317;
+  --success-5: #3c8618;
+  --success-6: #49aa19;
+  --success-7: #6abe39;
+  --success-8: #8fd460;
+  --success-9: #b2e58b;
+  --success-10: #d5f2bb;
+  --gold-1: #2b2111;
+  --gold-2: #443111;
+  --gold-3: #594214;
+  --gold-4: #7c5914;
+  --gold-5: #aa7714;
+  --gold-6: #d89614;
+  --gold-7: #e8b339;
+  --gold-8: #f3cc62;
+  --gold-9: #f8df8b;
+  --gold-10: #faedb5;
 
   --box-shadow-small:
     0px 0px 5px 0px rgba(0, 0, 0, 0.05), 0px 2px 10px 0px rgba(0, 0, 0, 0.2),

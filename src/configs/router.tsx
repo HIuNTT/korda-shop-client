@@ -7,6 +7,7 @@ import { Roles } from "@/constants/role"
 import { accountRoute } from "@/modules/account/route"
 import { cartRoute } from "@/modules/cart/route"
 import { homeRoute } from "@/modules/home/route"
+import { orderRoute } from "@/modules/order/route"
 import { adminProductRoute } from "@/modules/product-admin/route"
 import { productRoute } from "@/modules/product/route"
 import { createBrowserRouter } from "react-router"
@@ -16,7 +17,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     HydrateFallback: () => null,
-    children: [homeRoute, productRoute, cartRoute, accountRoute],
+    children: [homeRoute, productRoute, cartRoute, orderRoute, accountRoute],
     handle: {
       crumb: () => "Trang chủ",
     },
