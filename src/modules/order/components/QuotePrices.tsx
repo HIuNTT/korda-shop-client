@@ -11,6 +11,7 @@ import { toast } from "sonner"
 import { useNavigate } from "react-router"
 import { queryClient } from "@/configs/queryClient"
 import { useCart } from "@/stores/cart"
+import { PaymentMethodType } from "@/constants/paymentMethodType"
 
 interface Props {
   prices: QuotePricesProps
@@ -28,14 +29,11 @@ export default function QuotePrices({ prices }: Props) {
 
   const onSubmit: SubmitHandler<CreateOrderFormSchema> = (data) => {
     createOrder.mutate(data, {
-      onSuccess: () => {
-        queryClient.refetchQueries({
-          queryKey: ["count-item-in-cart"],
-        })
-        selectedIds.clear()
-        toast.success("Đặt hàng thành công")
-        form.reset()
-        navigate("/")
+      onSuccess: (data) => {
+        if (data.payment_method === PaymentMethodType.VNPAY && data.payment_url) {
+          window.location.href = data.payment_url
+          console.log("Redirecting to payment URL:", data.payment_url)
+        }
       },
     })
   }

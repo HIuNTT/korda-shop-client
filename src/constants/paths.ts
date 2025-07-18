@@ -17,6 +17,16 @@ export const paths = {
   order: {
     path: "/dat-hang",
     getHref: () => "/dat-hang",
+
+    success: {
+      path: "/thanh-cong",
+      getHref: () => "/dat-hang/thanh-cong",
+    },
+
+    failure: {
+      path: "/that-bai",
+      getHref: () => "/dat-hang/that-bai",
+    },
   },
 
   account: {

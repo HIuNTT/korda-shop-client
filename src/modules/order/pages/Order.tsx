@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import WaveIcon from "@/components/icons/WaveIcon"
 import { formatCurrency } from "@/utils/number"
 import QuotePrices from "../components/QuotePrices"
-import { useGetPaymentMethod } from "@/modules/payment-method/services/getPaymentMethod"
+import { useGetPaymentMethod } from "@/modules/payment/services/getPaymentMethod"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Form,
