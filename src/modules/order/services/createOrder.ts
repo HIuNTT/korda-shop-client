@@ -1,4 +1,5 @@
 import { api } from "@/configs/api"
+import { PaymentMethod } from "@/types/payment"
 import { useMutation } from "@tanstack/react-query"
 
 interface CreateOrderDto {
@@ -10,7 +11,8 @@ interface CreateOrderDto {
 
 export interface CreateOrderRes {
   order_code: string
-  payment_method: string
+  payment_method: PaymentMethod
+  total_price: number
   payment_url?: string
   qr_code?: string
 }

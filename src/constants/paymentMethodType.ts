@@ -11,5 +11,5 @@ export const PaymentMethodTitle: Record<PaymentMethodType, string> = {
   [PaymentMethodType.VNPAY]: "VNPAY",
   [PaymentMethodType.MOMO]: "Ví MoMo",
   [PaymentMethodType.ZALOPAY]: "Ví ZaloPay",
-  [PaymentMethodType.TRANSFER_ONLINE]: "Chuyển khoản trực tuyến",
+  [PaymentMethodType.TRANSFER_ONLINE]: "Chuyển khoản ngân hàng",
 }
