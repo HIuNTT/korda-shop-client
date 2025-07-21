@@ -438,7 +438,9 @@ export default function Product() {
         )}
       </div>
 
-      <TechnologyDrawer ref={techDrawerRef} data={getProduct.data?.attribute_items || []} />
+      {getProduct.data && (
+        <TechnologyDrawer ref={techDrawerRef} data={getProduct.data.attribute_items} />
+      )}
 
       <Dialog open={disclosureLogin.isOpen} onOpenChange={disclosureLogin.onOpenChange}>
         <LoginDialog onClose={disclosureLogin.onClose} onOpenSignUp={disclosureSignUp.onOpen} />
