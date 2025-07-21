@@ -1,54 +1,37 @@
-# React + TypeScript + Vite
+# Korda Shop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**This project is an e-commerce website selling laptops, phones, accessories.**
 
-Currently, two official plugins are available:
+**Technologies: ReactJS + TypeScript + Shadcn UI + TailwindCSS + Vite + Tanstack Query + Zustand**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Light/dark mode toggle
+- Shopping cart
+- Login/Signup with Google account
+- Category tree
+- Order
+- Checkout with VNPAY, bank transfer via QR code (automatic payment authentication)
+- JWT (JSON Web Token) authentication
+- Products with dynamic attributes and variations
+- And others.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## System Screenshots
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+![Product Detail](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095841/%E1%BA%A3nh%20github/product-detail_aduz5i.png)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+![Product Technology](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095842/%E1%BA%A3nh%20github/technology-product_sfoafc.png)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+![Shopping Cart](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095840/%E1%BA%A3nh%20github/cart_hqy8ve.png)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+![Place Order](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095841/%E1%BA%A3nh%20github/place_order_x7vg5j.png)
+
+![QR Code](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095841/%E1%BA%A3nh%20github/payment-qr-scan_zbvcpc.png)
+
+![Order Failure](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753096054/%E1%BA%A3nh%20github/order-failure_e4defr.png)
+
+![Create Product 1](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095840/%E1%BA%A3nh%20github/admin-create-product-1_zjkzhq.png)
+
+![Create Product 2](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095840/%E1%BA%A3nh%20github/admin-create-product-2_rao1ky.png)
+
+![Add Variation](https://res.cloudinary.com/dmsg5qwkl/image/upload/v1753095840/%E1%BA%A3nh%20github/add-variant_hhhell.png)
