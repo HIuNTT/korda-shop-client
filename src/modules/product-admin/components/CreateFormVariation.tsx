@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Plus, X } from "lucide-react"
 import Field from "@/components/core/field"
-import { FormProductValues } from "../pages/CreatProduct"
+import { FormProductValues } from "../pages/CreatUpdateProduct"
 import {
   Table,
   TableBody,
@@ -15,8 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { ProductDetail } from "../services/getProductDetail"
 
-export default function CreateFormVariation() {
+interface Props {
+  variationList?: ProductDetail["variation_list"]
+  variantValues?: ProductDetail["variant_values"]
+}
+
+export default function CreateFormVariation({ variationList, variantValues }: Props) {
   const [isVariation, setIsVariation] = useState<boolean>(false)
 
   const getVariantType = useGetVariantType()
@@ -27,6 +33,7 @@ export default function CreateFormVariation() {
     fields: variationListFields,
     append: appendVariation,
     remove: removeVariation,
+    replace: replaceVariation,
   } = useFieldArray({
     control,
     name: "variation_list",
@@ -64,6 +71,21 @@ export default function CreateFormVariation() {
       replaceVariantValue(newVariantValues)
     }
   }, [selectedVariantType?.[0]?.value_list, replaceVariantValue])
+
+  useEffect(() => {
+    if (variationList) {
+      setIsVariation(true)
+      replaceVariation(
+        variationList.map((item) => ({
+          ...item,
+          value_list: item.value_list.flatMap((v) => v.value_id),
+        })),
+      )
+      if (variantValues) {
+        replaceVariantValue(variantValues as FormProductValues["variant_values"])
+      }
+    }
+  }, [variationList])
 
   return (
     <div

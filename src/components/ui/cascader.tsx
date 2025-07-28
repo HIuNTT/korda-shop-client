@@ -229,6 +229,10 @@ export function Cascader({
     ],
   )
 
+  React.useEffect(() => {
+    setRawValues(toRawValues(value || defaultValue || []))
+  }, [value, defaultValue])
+
   return (
     <CascaderContext.Provider value={cascaderContext}>
       <Popover open={open} onOpenChange={setOpen} defaultOpen={defaultOpen}>

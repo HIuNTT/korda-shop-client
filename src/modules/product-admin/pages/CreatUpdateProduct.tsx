@@ -15,10 +15,15 @@ import { CreateProductDto, useCreateProduct } from "../services/createProduct"
 import { toast } from "sonner"
 import CreateFormVariation from "../components/CreateFormVariation"
 import { useGetProductGroup } from "../services/getProductGroup"
+import { useNavigate, useParams } from "react-router"
+import { ProductDetailParams } from "../route"
+import { useGetProductDetail } from "../services/getProductDetail"
+import { useUpdateProduct } from "../services/updateProduct"
+import { paths } from "@/constants/paths"
 
 const attributeValueSchema = z.object({
   option_id: z.number().optional(),
-  raw_value: z.string().optional(),
+  raw_value: z.string().trim().optional(),
 })
 
 const attributeSchema = z
@@ -156,8 +161,8 @@ const formSchema = z
     name: z.string().min(1, { error: "Tên sản phẩm không được để trống" }).max(120, {
       error: "Tên sản phẩm không được vượt quá 120 ký tự",
     }),
-    secondary_name: z.string().optional(),
-    related_name: z.string().optional(),
+    secondary_name: z.preprocess((val) => val || undefined, z.string().trim().optional()),
+    related_name: z.preprocess((val) => val || undefined, z.string().trim().optional()),
     category_ids: z.array(z.array(z.number())).nonempty("Vui lòng chọn ít nhất một danh mục"),
     description: z.string().min(1, "Mô tả sản phẩm không được để trống"),
     highlight_features: z.string().min(1, "Đặc điểm nổi bật không được để trống"),
@@ -165,9 +170,9 @@ const formSchema = z
     variant_values: z.array(variantSchema),
     variation_list: z.array(variationSchema),
 
-    product_state: z.string().optional(),
-    included_accessories: z.string().optional(),
-    warranty_information: z.string().optional(),
+    product_state: z.preprocess((val) => val || undefined, z.string().trim().optional()),
+    included_accessories: z.preprocess((val) => val || undefined, z.string().trim().optional()),
+    warranty_information: z.preprocess((val) => val || undefined, z.string().trim().optional()),
     tax_vat: z.coerce.boolean().optional(),
     group_id: z.number().optional(),
   })
@@ -185,11 +190,17 @@ function getIndex() {
 
 export type FormProductValues = z.input<typeof formSchema>
 
-export default function CreatProduct() {
+export default function CreatUpdateProduct() {
+  const { slug = "" } = useParams<keyof ProductDetailParams>()
+
+  const navigate = useNavigate()
+
   const { data: categoryOptions } = useGetCategoryTree()
   const getProductGroup = useGetProductGroup()
   const { mutate, data: attributesData, isPending } = useGetAttributes()
   const createProduct = useCreateProduct()
+  const updateProduct = useUpdateProduct()
+  const getProductDetail = useGetProductDetail({ slug }, !!slug)
 
   const targetRef = useRef<HTMLDivElement>(null)
 
@@ -205,6 +216,7 @@ export default function CreatProduct() {
       highlight_features: "",
       attributes: [],
       related_name: undefined,
+      secondary_name: undefined,
       tax_vat: "true",
       variant_values: [
         {
@@ -218,7 +230,7 @@ export default function CreatProduct() {
     },
   })
 
-  const { replace } = useFieldArray({
+  const { replace, fields } = useFieldArray({
     control: form.control,
     name: "attributes",
   })
@@ -232,7 +244,7 @@ export default function CreatProduct() {
   }, [categoriesField])
 
   useEffect(() => {
-    if (attributesData) {
+    if (attributesData && !slug) {
       const attributes = attributesData
         .flatMap((attGroup) => attGroup.attributes)
         .map((att) => ({
@@ -244,12 +256,40 @@ export default function CreatProduct() {
         }))
       replace(attributes)
     }
-  }, [attributesData])
+  }, [attributesData, slug])
+
+  useEffect(() => {
+    if (getProductDetail.data) {
+      const { attributes, variation_list, variant_values, ...restData } = getProductDetail.data
+      form.reset(restData)
+    }
+  }, [getProductDetail.data, form])
+
+  useEffect(() => {
+    if (getProductDetail.data && attributesData) {
+      const attMap = new Map(
+        getProductDetail.data.attributes?.map((att) => [att.attribute_id, att]),
+      )
+      const attributes = attributesData
+        .flatMap((attGroup) => attGroup.attributes)
+        .map((att) => ({
+          attribute_id: att.id,
+          attribute_name: att.name,
+          input_type: att.input_type,
+          is_required: att.is_required,
+          attribute_values:
+            (att.input_type === InputType.MULTI_SELECT
+              ? attMap.get(att.id)?.attribute_values.map((v) => v.option_id)
+              : attMap.get(att.id)?.attribute_values) || [],
+        }))
+      replace(attributes)
+    }
+  }, [getProductDetail.data, attributesData, replace])
 
   const onSubmit: SubmitHandler<z.output<typeof formSchema>> = (data) => {
     const formattedData: CreateProductDto = {
       ...data,
-      category_ids: [...new Set(data.category_ids.flat())],
+      category_ids: data.category_ids.map((item) => item.at(-1)!),
       attributes: data.attributes?.filter(
         (att) =>
           att.attribute_values.length > 0 &&
@@ -257,12 +297,27 @@ export default function CreatProduct() {
       ),
     }
 
-    createProduct.mutate(formattedData, {
-      onSuccess: () => {
-        form.reset()
-        toast.success("Tạo sản phẩm thành công")
-      },
-    })
+    if (!slug) {
+      createProduct.mutate(formattedData, {
+        onSuccess: () => {
+          form.reset()
+          toast.success("Thêm sản phẩm thành công")
+          navigate(paths.admin.product.list.getHref())
+        },
+      })
+    }
+
+    if (slug && getProductDetail.data) {
+      updateProduct.mutate(
+        { id: getProductDetail.data.id, ...formattedData },
+        {
+          onSuccess: () => {
+            toast.success("Cập nhật sản phẩm thành công")
+            navigate(paths.admin.product.list.getHref())
+          },
+        },
+      )
+    }
   }
 
   return (
@@ -374,6 +429,7 @@ export default function CreatProduct() {
                         ))}
                     </div>
                   ) : (
+                    fields.length > 0 &&
                     attributesData?.map((attributeGroup, idx) => (
                       <div key={idx}>
                         <div className="mb-6.5 flex items-center whitespace-nowrap">
@@ -470,7 +526,10 @@ export default function CreatProduct() {
               </CardHeader>
               <CardContent>
                 {categoriesField && categoriesField.length > 0 ? (
-                  <CreateFormVariation />
+                  <CreateFormVariation
+                    variationList={getProductDetail.data?.variation_list}
+                    variantValues={getProductDetail.data?.variant_values}
+                  />
                 ) : (
                   <div className="text-muted-foreground text-sm">
                     Có thể điều chỉnh sau khi chọn danh mục
@@ -555,7 +614,10 @@ export default function CreatProduct() {
               </CardContent>
             </Card>
           </div>
-          <CreateFormFooter targetRef={targetRef} isLoading={createProduct.isPending} />
+          <CreateFormFooter
+            targetRef={targetRef}
+            isLoading={createProduct.isPending || updateProduct.isPending}
+          />
         </form>
       </Form>
     </>

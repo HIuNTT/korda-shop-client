@@ -68,6 +68,10 @@ export const paths = {
         path: "/create",
         getHref: () => "/admin/products/create",
       },
+      detail: {
+        path: "/:slug",
+        getHref: (slug: string) => `/admin/products/${slug}`,
+      },
     },
   },
 } as const

@@ -1,7 +1,7 @@
 import useUpload, { RdFile } from "@/hooks/use-upload"
 import { AxiosResponse } from "axios"
 import { ImagePlus } from "lucide-react"
-import { MouseEvent, PointerEvent, TouchEvent, useMemo, useState } from "react"
+import { MouseEvent, PointerEvent, TouchEvent, useEffect, useMemo, useState } from "react"
 import { createPortal, flushSync } from "react-dom"
 import {
   closestCenter,
@@ -54,7 +54,7 @@ export interface UploadImageProps {
 
 function toObjectFile(file: Partial<UploadFile>): UploadFile {
   return {
-    uid: file.uid || `rd-upload-${Date.now()}`,
+    uid: file.uid || `rd-upload-${Date.now()}-${file.key}`,
     name: file.name || "file",
     key: file.key,
     url: file.url,
@@ -227,7 +227,7 @@ export default function UploadImage({
             key: item.key,
             url: item.url,
           }))
-        : { key: nextFileList[0]?.key, url: nextFileList[0]?.url }
+        : nextFileList[0]
       onChange?.(triggerValues)
       return nextFileList
     })
@@ -283,6 +283,16 @@ export default function UploadImage({
     () => fileList.filter((file) => file.status === "done").map((file) => file.uid),
     [fileList],
   )
+
+  useEffect(() => {
+    if (value) {
+      setFileList(
+        Array.isArray(value) ? value.map((item) => toObjectFile(item)) : [toObjectFile(value)],
+      )
+    } else {
+      setFileList([])
+    }
+  }, [value])
 
   return (
     <DndContext

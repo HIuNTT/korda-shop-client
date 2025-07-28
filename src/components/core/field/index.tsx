@@ -147,7 +147,8 @@ export default function Field({
                 <RadioGroup
                   {...props}
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={field.value.toString()}
+                  value={field.value.toString()}
                   className={cn("min-h-9 flex-wrap gap-3", size === "lg" && "min-h-10 gap-4")}
                 />
               )}
