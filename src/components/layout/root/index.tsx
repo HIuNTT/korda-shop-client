@@ -1,4 +1,4 @@
-import { Outlet } from "react-router"
+import { Outlet, ScrollRestoration } from "react-router"
 import Header from "./header"
 import ProgressBar from "../ProgressBar"
 
@@ -9,6 +9,7 @@ export default function RootLayout() {
       <Header />
       <Outlet />
       <div className="h-30" />
+      <ScrollRestoration />
     </div>
   )
 }

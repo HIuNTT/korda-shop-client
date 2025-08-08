@@ -12,7 +12,7 @@ export default function AccountLayout() {
         </div>
         <div className="flex flex-col gap-5 md:grid md:grid-cols-3 lg:grid-cols-4">
           <div className="md:col-span-1">
-            <div className="bg-background h-full rounded-xl md:min-h-[calc(100vh-116px)]">
+            <div className="bg-background h-full rounded-lg md:max-h-[calc(100vh-132px)] md:min-h-[calc(100vh-132px)]">
               <NavbarList items={navAccountData} />
             </div>
           </div>

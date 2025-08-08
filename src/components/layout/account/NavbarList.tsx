@@ -10,7 +10,7 @@ export default function NavbarList({ items }: Props) {
   const checkIsActive = (href: string, item: NavAccountItem) => href === item.url
 
   return (
-    <div className="py-4 text-sm font-medium">
+    <div className="py-2 text-sm font-medium">
       {items.map((item, idx) => (
         <div
           key={idx}

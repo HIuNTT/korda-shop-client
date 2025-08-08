@@ -32,4 +32,6 @@ export interface Order {
   shipping_price: number
   voucher_price: number
   payment_method: PaymentMethod
+  created_at: string
+  updated_at: string
 }

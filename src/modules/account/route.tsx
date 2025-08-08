@@ -24,5 +24,17 @@ export const accountRoute: RouteObject = {
         crumb: () => "Sổ địa chỉ",
       },
     },
+    {
+      path: paths.account.order.path.slice(1),
+      lazy: async () => {
+        const { default: MyOrder } = await import("./pages/MyOrder")
+        return {
+          Component: MyOrder,
+        }
+      },
+      handle: {
+        crumb: () => "Đơn hàng của tôi",
+      },
+    },
   ],
 }

@@ -3,7 +3,7 @@ import { useTheme } from "@/stores/theme"
 import { Moon, Sun } from "lucide-react"
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
 
   return (
     <Button
@@ -11,12 +11,12 @@ export default function ThemeToggle() {
       size="icon"
       isIconOnly
       className="size-10 transition-none [&_svg:not([class*='size-'])]:size-4.5 [&:has(>div>i)>div]:size-4.5"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       aria-label="Toggle Theme"
       title="Toggle Theme"
     >
-      {theme === "light" && <Sun />}
-      {theme === "dark" && <Moon />}
+      {resolvedTheme === "light" && <Sun />}
+      {resolvedTheme === "dark" && <Moon />}
     </Button>
   )
 }
