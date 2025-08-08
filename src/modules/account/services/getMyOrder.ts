@@ -62,5 +62,6 @@ export function useGetMyOrderList({ take = 5, type }: GetMyOrderListParams) {
       if (current_page < total_pages) return current_page + 1
     },
     placeholderData: undefined,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   })
 }
