@@ -44,6 +44,7 @@ export interface GetMyOrderListParams {
   page?: number
   take?: number
   type?: OrderStatusType
+  keyword?: string
 }
 
 export async function getMyOrderList(params: GetMyOrderListParams) {
@@ -51,10 +52,10 @@ export async function getMyOrderList(params: GetMyOrderListParams) {
     .data.data
 }
 
-export function useGetMyOrderList({ take = 5, type }: GetMyOrderListParams) {
+export function useGetMyOrderList({ take = 5, type, keyword }: GetMyOrderListParams) {
   return useInfiniteQuery({
-    queryKey: ["get-my-order", take, type],
-    queryFn: ({ pageParam }) => getMyOrderList({ take, type, page: pageParam }),
+    queryKey: ["get-my-order", take, type, keyword],
+    queryFn: ({ pageParam }) => getMyOrderList({ take, type, keyword, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage) return

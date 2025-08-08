@@ -10,16 +10,31 @@ import { paths } from "@/constants/paths"
 import LoadingMyOrder from "../components/my-order/LoadingMyOrder"
 import MyOrderItem from "../components/my-order/MyOrderItem"
 import { useInView } from "react-intersection-observer"
+import Field from "@/components/core/field"
+import { Form } from "@/components/ui/form"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { Search } from "lucide-react"
 
 export default function MyOrder() {
   const [type, setType] = useState<number>()
+  const [keyword, setKeyword] = useState<string | undefined>(undefined)
 
   const { resolvedTheme } = useTheme()
+
+  const form = useForm<{ keyword: string }>()
 
   const tabsRef = useRef<HTMLDivElement>(null)
   const { ref, inView } = useInView()
 
-  const getMyOrders = useGetMyOrderList({ type })
+  const getMyOrders = useGetMyOrderList({ type, keyword })
+
+  const onSearch: SubmitHandler<{ keyword: string }> = ({ keyword }) => {
+    if (keyword) {
+      setKeyword(keyword)
+    } else {
+      setKeyword(undefined)
+    }
+  }
 
   useEffect(() => {
     if (inView) {
@@ -85,6 +100,22 @@ export default function MyOrder() {
           )
         })}
       </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSearch)} className="mb-3">
+          <Field
+            inputMode="search"
+            className="bg-background focus-within:border focus-within:ring-0"
+            t="input"
+            name="keyword"
+            type="search"
+            size="lg"
+            startContent={<Search />}
+            placeholder="Tìm kiếm theo mã đơn hàng hoặc tên sản phẩm"
+          />
+        </form>
+      </Form>
+
       {getMyOrders.isLoading ? (
         <div className="flex flex-col gap-3">
           <LoadingMyOrder />
