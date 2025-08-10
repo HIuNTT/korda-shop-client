@@ -6,7 +6,7 @@ export enum PaymentMethodType {
   TRANSFER_ONLINE = "transfer_online",
 }
 
-export const PaymentMethodTitle: Record<PaymentMethodType, string> = {
+export const paymentMethodTitle: Record<PaymentMethodType, string> = {
   [PaymentMethodType.COD]: "Thanh toán khi nhận hàng",
   [PaymentMethodType.VNPAY]: "VNPAY",
   [PaymentMethodType.MOMO]: "Ví MoMo",

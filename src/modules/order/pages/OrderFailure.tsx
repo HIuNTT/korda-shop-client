@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router"
 import { useGetOrderInfo } from "../services/getOrderInfo"
 import { PiSealWarningFill } from "react-icons/pi"
-import { PaymentMethodTitle, PaymentMethodType } from "@/constants/paymentMethodType"
+import { paymentMethodTitle, PaymentMethodType } from "@/constants/paymentMethodType"
 import { formatCurrency } from "@/utils/number"
 import { paths } from "@/constants/paths"
 import { Button } from "@/components/ui/button"
@@ -48,13 +48,7 @@ export default function OrderFailure() {
                           src={getOrderInfo.data.payment_method.image_url}
                           alt={getOrderInfo.data.payment_method.name}
                         />
-                        <span>
-                          {
-                            PaymentMethodTitle[
-                              getOrderInfo.data.payment_method.key as PaymentMethodType
-                            ]
-                          }
-                        </span>
+                        <span>{paymentMethodTitle[getOrderInfo.data.payment_method.key]}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-3 text-sm">

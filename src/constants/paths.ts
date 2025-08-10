@@ -43,8 +43,14 @@ export const paths = {
       getHref: () => "/tai-khoan/so-dia-chi",
     },
     order: {
-      path: "/don-hang",
-      getHref: () => "/tai-khoan/don-hang",
+      list: {
+        path: "/don-hang",
+        getHref: () => "/tai-khoan/don-hang",
+      },
+      detail: {
+        path: "/:id",
+        getHref: (id: number) => `/tai-khoan/don-hang/${id}`,
+      },
     },
   },
 

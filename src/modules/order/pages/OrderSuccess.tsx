@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router"
 import { useGetOrderInfo } from "../services/getOrderInfo"
 import { HiCheckBadge } from "react-icons/hi2"
-import { PaymentMethodTitle, PaymentMethodType } from "@/constants/paymentMethodType"
+import { paymentMethodTitle, PaymentMethodType } from "@/constants/paymentMethodType"
 import { formatCurrency } from "@/utils/number"
 import { Button } from "@/components/ui/button"
 import { paths } from "@/constants/paths"
@@ -47,13 +47,7 @@ export default function OrderSuccess() {
                           src={getOrderInfo.data.payment_method.image_url}
                           alt={getOrderInfo.data.payment_method.name}
                         />
-                        <span>
-                          {
-                            PaymentMethodTitle[
-                              getOrderInfo.data.payment_method.key as PaymentMethodType
-                            ]
-                          }
-                        </span>
+                        <span>{paymentMethodTitle[getOrderInfo.data.payment_method.key]}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-3 text-sm">

@@ -7,7 +7,8 @@ interface Props {
 
 export default function NavbarList({ items }: Props) {
   const { pathname } = useLocation()
-  const checkIsActive = (href: string, item: NavAccountItem) => href === item.url
+  const checkIsActive = (href: string, item: NavAccountItem) =>
+    href === item.url || href.startsWith(item.url)
 
   return (
     <div className="py-2 text-sm font-medium">

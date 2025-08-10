@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function LoadingMyOrder() {
+export default function LoadingMyOrderList() {
   return Array(5)
     .fill("")
     .map((_, index) => (

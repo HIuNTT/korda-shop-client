@@ -1,12 +1,14 @@
 import { formatToDate } from "@/utils/date"
-import { MyOrderResponse } from "../../services/getMyOrder"
+import { GetMyOrderResponse } from "../../services/getMyOrder"
 import { orderStatusTitles } from "@/constants/order"
 import { formatCurrency } from "@/utils/number"
 import { Button } from "@/components/ui/button"
 import { isBoolean, isEmpty } from "lodash-es"
+import { Link } from "react-router"
+import { paths } from "@/constants/paths"
 
 interface Props {
-  order: MyOrderResponse
+  order: GetMyOrderResponse
 }
 
 export default function MyOrderItem({ order }: Props) {
@@ -22,7 +24,10 @@ export default function MyOrderItem({ order }: Props) {
           {orderStatusTitles[order.status].toUpperCase()}
         </div>
       </div>
-      <div className="border-b">
+      <Link
+        to={`${paths.account.order.detail.getHref(order.id)}`}
+        className="cursor-pointer border-b"
+      >
         {order.details.map((item, index) => (
           <div className="flex items-center gap-3 py-3 not-first:border-t" key={index}>
             <div className="flex size-14 shrink-0 items-center justify-center rounded border p-1.5 md:size-16">
@@ -54,7 +59,7 @@ export default function MyOrderItem({ order }: Props) {
             </div>
           </div>
         ))}
-      </div>
+      </Link>
       <div className="flex items-center justify-end gap-2.5 py-3">
         <span className="text-sm">Thành tiền:</span>
         <span className="text-primary text-base font-medium md:text-xl">
@@ -67,19 +72,19 @@ export default function MyOrderItem({ order }: Props) {
           {isEmpty(order.flags) ? null : (
             <>
               {isBoolean(order.flags.is_re_buy) && (
-                <Button disabled={!order.flags.is_re_buy}>Mua lại</Button>
+                <Button disabled={!order.flags.is_re_buy}>Mua Lại</Button>
               )}
               {isBoolean(order.flags.is_repayment) && (
-                <Button disabled={!order.flags.is_repayment}>Thanh toán lại</Button>
+                <Button disabled={!order.flags.is_repayment}>Thanh Toán Lại</Button>
               )}
               {isBoolean(order.flags.is_return) && (
                 <Button variant="outline" disabled={!order.flags.is_return}>
-                  Trả hàng/Hoàn tiền
+                  Trả Hàng/Hoàn Tiền
                 </Button>
               )}
               {isBoolean(order.flags.is_cancel) && (
                 <Button variant="outline" disabled={!order.flags.is_cancel}>
-                  Hủy đơn
+                  Hủy Đơn Hàng
                 </Button>
               )}
             </>

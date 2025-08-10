@@ -7,7 +7,7 @@ import { useTheme } from "@/stores/theme"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router"
 import { paths } from "@/constants/paths"
-import LoadingMyOrder from "../components/my-order/LoadingMyOrder"
+import LoadingMyOrderList from "../components/my-order/LoadingMyOrderList"
 import MyOrderItem from "../components/my-order/MyOrderItem"
 import { useInView } from "react-intersection-observer"
 import Field from "@/components/core/field"
@@ -118,14 +118,14 @@ export default function MyOrder() {
 
       {getMyOrders.isLoading ? (
         <div className="flex flex-col gap-3">
-          <LoadingMyOrder />
+          <LoadingMyOrderList />
         </div>
       ) : getMyOrders.data?.pages[0].items.length ? (
         <div className="flex flex-col gap-3">
           {getMyOrders.data.pages.map((page) =>
             page?.items.map((order, idx) => <MyOrderItem key={idx} order={order} />),
           )}
-          {getMyOrders.isFetchingNextPage && <LoadingMyOrder />}
+          {getMyOrders.isFetchingNextPage && <LoadingMyOrderList />}
           {getMyOrders.hasNextPage && <div ref={ref}></div>}
         </div>
       ) : (

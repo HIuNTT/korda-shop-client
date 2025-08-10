@@ -20,7 +20,7 @@ export const navAccountData: NavAccountItem[] = [
   },
   {
     title: "Đơn hàng của tôi",
-    url: paths.account.order.getHref(),
+    url: paths.account.order.list.getHref(),
     iconOutline: BsBoxSeam,
     iconSolid: BsBoxSeamFill,
   },
